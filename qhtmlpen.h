@@ -2,6 +2,7 @@
 #define QHTMLPEN_H
 
 #include <QMainWindow>
+#include "FileSystem.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class QHTMLPen; }
