@@ -2,6 +2,7 @@
 #define QHTMLPEN_H
 
 #include <QMainWindow>
+#include <QTextEdit>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class QHTMLPen; }
@@ -17,5 +18,6 @@ public:
 
 private:
     Ui::QHTMLPen *ui;
+    QTextEdit *textEdit;
 };
 #endif // QHTMLPEN_H
