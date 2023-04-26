@@ -17,5 +17,11 @@ public:
 
 private:
     Ui::QHTMLPen *ui;
+
+protected:
+    virtual void closeEvent(QCloseEvent *event) override;
+    bool eventFilter(QObject* obj, QEvent* event) override;
+private:
+    bool isFileSaved();
 };
 #endif // QHTMLPEN_H
