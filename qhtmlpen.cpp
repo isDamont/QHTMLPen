@@ -6,6 +6,9 @@ QHTMLPen::QHTMLPen(QWidget *parent)
     , ui(new Ui::QHTMLPen)
 {
     ui->setupUi(this);
+
+    textEdit = new QTextEdit(this);
+    setCentralWidget(textEdit);
 }
 
 QHTMLPen::~QHTMLPen()
