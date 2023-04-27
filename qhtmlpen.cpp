@@ -36,7 +36,7 @@ void QHTMLPen::closeEvent(QCloseEvent *event)
         switch (ansver) {
             case QMessageBox::Save:
                 // Вызываем метод для сохранения и игнорируем эвент закрытия
-
+                slotSaveFile();
                 event->ignore();
                 break;
             case QMessageBox::Discard:
