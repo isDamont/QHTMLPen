@@ -6,7 +6,11 @@ qint64 FileSystem::saveFile(const QString& text)
 {
     //Если объекта QFile не существует, создаём его
     if(!file)
-        createFile();
+    {
+        //Если файл не создан не вызываем метод write иначе вылет
+        if(!createFile())
+            return writeErr;
+    }
 
     return write(text);
 }
@@ -14,13 +18,15 @@ qint64 FileSystem::saveFile(const QString& text)
 //Возвращает количество записанных байт, если ошибка -1
 qint64 FileSystem::saveAs(const QString &text)
 {
-    createFile();
+    //Если файл не создан не вызываем метод write иначе вылет
+    if(!createFile())
+        return writeErr;
 
     return write(text);
 }
 
 //Метод создаёт новый объект QFile
-void FileSystem::createFile()
+bool FileSystem::createFile()
 {
     QString fileName = QFileDialog::getSaveFileName(nullptr, "Сохранить файл",
     QDir::currentPath(), "All(*.*) ;; txt(*.txt)");
@@ -30,13 +36,16 @@ void FileSystem::createFile()
         //Освобождаем умный указатель для возможноти создания нового
         file.release();
         file = std::make_unique<QFile>(fileName);
+        return true;
     }
+
+    return false;
 }
 
 qint64 FileSystem::write(const QString& text)
 {
     file->open(QFile::WriteOnly | QFile::Text);
-    qint64 bytesWritten = file->write(text.toUtf8(), text.size());
+    qint64 bytesWritten = file->write(text.toUtf8());
     file->close();
 
     return bytesWritten;

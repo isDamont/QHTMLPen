@@ -24,6 +24,6 @@ void QHTMLPen::slotSaveFile()
 
 void QHTMLPen::slotSaveAs()
 {
-    fS->saveAs(ui->textEdit->toPlainText());
+    //fS->saveAs(ui->textEdit->toPlainText());
 }
 
