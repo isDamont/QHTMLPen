@@ -2,6 +2,7 @@
 #include "ui_qhtmlpen.h"
 
 #include <QCloseEvent>
+#include <QMessageBox>
 
 QHTMLPen::QHTMLPen(QWidget *parent)
     : QMainWindow(parent)
@@ -25,8 +26,32 @@ void QHTMLPen::closeEvent(QCloseEvent *event)
     }
     else
     {
-        event->ignore();
-        // сохранение файла
+        QMessageBox askSave(this);
+        askSave.setText(tr("Изменения не сохранены!"));
+        askSave.setInformativeText(tr("Хотите сохранить изменения?"));
+        askSave.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        askSave.setDefaultButton(QMessageBox::Save);
+        int ansver = askSave.exec();
+
+        switch (ansver) {
+            case QMessageBox::Save:
+                // Вызываем метод для сохранения и игнорируем эвент закрытия
+
+                event->ignore();
+                break;
+            case QMessageBox::Discard:
+                // выходим не сохраняя
+                event->accept();
+                break;
+            case QMessageBox::Cancel:
+                // игнорируем эвент закрытия
+                event->ignore();
+                break;
+            default:
+                // не должно никогда вызываться, но на всякий случай добавлю игнорирование эвента
+                event->ignore();
+                break;
+        }
     }
 }
 
@@ -55,6 +80,6 @@ bool QHTMLPen::eventFilter(QObject *obj, QEvent *event)
 bool QHTMLPen::isFileSaved()
 {
     // проверка сохранения файла
-    return true;
+    return false;
 }
 
