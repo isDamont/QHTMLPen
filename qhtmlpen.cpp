@@ -27,28 +27,28 @@ void QHTMLPen::closeEvent(QCloseEvent *event)
     else
     {
         QMessageBox askSave(this);
-        askSave.setText(tr("Изменения не сохранены!"));
-        askSave.setInformativeText(tr("Хотите сохранить изменения?"));
+        askSave.setText(tr("РР·РјРµРЅРµРЅРёСЏ РЅРµ СЃРѕС…СЂР°РЅРµРЅС‹!"));
+        askSave.setInformativeText(tr("РҐРѕС‚РёС‚Рµ СЃРѕС…СЂР°РЅРёС‚СЊ РёР·РјРµРЅРµРЅРёСЏ?"));
         askSave.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         askSave.setDefaultButton(QMessageBox::Save);
         int ansver = askSave.exec();
 
         switch (ansver) {
             case QMessageBox::Save:
-                // Вызываем метод для сохранения и игнорируем эвент закрытия
+                // Р’С‹Р·С‹РІР°РµРј РјРµС‚РѕРґ РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ Рё РёРіРЅРѕСЂРёСЂСѓРµРј СЌРІРµРЅС‚ Р·Р°РєСЂС‹С‚РёСЏ
 
                 event->ignore();
                 break;
             case QMessageBox::Discard:
-                // выходим не сохраняя
+                // РІС‹С…РѕРґРёРј РЅРµ СЃРѕС…СЂР°РЅСЏСЏ
                 event->accept();
                 break;
             case QMessageBox::Cancel:
-                // игнорируем эвент закрытия
+                // РёРіРЅРѕСЂРёСЂСѓРµРј СЌРІРµРЅС‚ Р·Р°РєСЂС‹С‚РёСЏ
                 event->ignore();
                 break;
             default:
-                // не должно никогда вызываться, но на всякий случай добавлю игнорирование эвента
+                // РЅРµ РґРѕР»Р¶РЅРѕ РЅРёРєРѕРіРґР° РІС‹Р·С‹РІР°С‚СЊСЃСЏ, РЅРѕ РЅР° РІСЃСЏРєРёР№ СЃР»СѓС‡Р°Р№ РґРѕР±Р°РІР»СЋ РёРіРЅРѕСЂРёСЂРѕРІР°РЅРёРµ СЌРІРµРЅС‚Р°
                 event->ignore();
                 break;
         }
@@ -79,7 +79,7 @@ bool QHTMLPen::eventFilter(QObject *obj, QEvent *event)
 
 bool QHTMLPen::isFileSaved()
 {
-    // проверка сохранения файла
+    // РїСЂРѕРІРµСЂРєР° СЃРѕС…СЂР°РЅРµРЅРёСЏ С„Р°Р№Р»Р°
     return false;
 }
 
