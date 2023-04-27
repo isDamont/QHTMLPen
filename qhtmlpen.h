@@ -2,6 +2,7 @@
 #define QHTMLPEN_H
 
 #include <QMainWindow>
+#include <QAction>
 #include "FileSystem.h"
 
 QT_BEGIN_NAMESPACE
@@ -15,6 +16,11 @@ class QHTMLPen : public QMainWindow
 public:
     QHTMLPen(QWidget *parent = nullptr);
     ~QHTMLPen();
+    std::unique_ptr<FileSystem> fS;
+
+public slots:
+    void slotSaveFile();
+    void slotSaveAs();
 
 private:
     Ui::QHTMLPen *ui;

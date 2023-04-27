@@ -1,37 +1,43 @@
-#include"FileSystem.h"
+#include <QFileDialog>
+#include "FileSystem.h"
 
-FileSystem::FileSystem()
+//Возвращает количество записанных байт, если ошибка -1
+qint64 FileSystem::saveFile(const QString& text)
 {
+    //Если объекта QFile не существует, создаём его
+    if(!file)
+        createFile();
+
+    return write(text);
 }
 
-void FileSystem::loadFile()
+//Возвращает количество записанных байт, если ошибка -1
+qint64 FileSystem::saveAs(const QString &text)
 {
+    createFile();
 
+    return write(text);
 }
 
-void FileSystem::saveFile(QString& text)
+//Метод создаёт новый объект QFile
+void FileSystem::createFile()
 {
-    if(!file.get()->isOpen())
+    QString fileName = QFileDialog::getSaveFileName(nullptr, "Сохранить файл",
+    QDir::currentPath(), "All(*.*) ;; txt(*.txt)");
+
+    if (!fileName.isEmpty())
     {
-        openFile();
-        write(text);
-        //Создать файл и вызвать функцию write();
+        //Освобождаем умный указатель для возможноти создания нового
+        file.release();
+        file = std::make_unique<QFile>(fileName);
     }
-
-
 }
 
-void FileSystem::openFile()
+qint64 FileSystem::write(const QString& text)
 {
+    file->open(QFile::WriteOnly | QFile::Text);
+    qint64 bytesWritten = file->write(text.toUtf8(), text.size());
+    file->close();
 
-}
-
-void FileSystem::read()
-{
-
-}
-
-void FileSystem::write(QString& text)
-{
-
+    return bytesWritten;
 }

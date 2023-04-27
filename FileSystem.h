@@ -1,18 +1,16 @@
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
-#include<QFile>
+#include <QFile>
 
 class FileSystem
 {
 public:
-    FileSystem();
-    void loadFile();
-    void saveFile(QString& text);
+    qint64 saveFile(const QString& text);
+    qint64 saveAs(const QString& text);
 
 private:
-    void openFile();
-    void read();
-    void write(QString& text);
+    void createFile();
+    qint64 write(const QString& text);
 
 private:
     std::unique_ptr<QFile> file;
