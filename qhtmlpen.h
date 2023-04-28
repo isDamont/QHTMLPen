@@ -26,6 +26,8 @@ private:
 
     QMap<QString, QAction*> buttonMenu;
 
+    void menuInitial();
+
 private slots:
     // слоты меню Файл
     void slotCreate();

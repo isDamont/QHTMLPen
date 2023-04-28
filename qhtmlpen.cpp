@@ -11,6 +11,16 @@ QHTMLPen::QHTMLPen(QWidget *parent)
 {
     ui->setupUi(this);
 
+    menuInitial();
+}
+
+QHTMLPen::~QHTMLPen()
+{
+    delete ui;
+}
+
+void QHTMLPen::menuInitial()
+{
     // меню Файл
     menuFile = menuBar()->addMenu(tr("Файл"));
     buttonMenu["Создать"] = menuFile->addAction(tr("Создать"));
@@ -54,11 +64,6 @@ QHTMLPen::QHTMLPen(QWidget *parent)
 
     buttonMenu["Изменить форматирование"] = menuView->addAction(tr("Изменить форматирование"));
     connect(buttonMenu.value("Изменить форматирование"), &QAction::triggered, this, &QHTMLPen::slotChangeTextFormat);
-}
-
-QHTMLPen::~QHTMLPen()
-{
-    delete ui;
 }
 
 void QHTMLPen::slotCreate()
