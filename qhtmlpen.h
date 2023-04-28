@@ -4,6 +4,8 @@
 #include "windowhtmlrender.h"
 #include <QMainWindow>
 #include <QTextEdit>
+#include <QTabWidget>
+#include <QMessageBox>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class QHTMLPen; }
@@ -17,11 +19,14 @@ public:
     QHTMLPen(QWidget *parent = nullptr);
     ~QHTMLPen();
 
+    void addNewTab(QString);
+
     void Slot_render_Init();
 
 private:
     Ui::QHTMLPen *ui;
-    QTextEdit *textEdit;
+    QTabWidget *tabWidget;
+
     WindowHtmlRender *windowHTML = nullptr;
 };
 #endif // QHTMLPEN_H
