@@ -30,6 +30,7 @@ private:
 protected:
     virtual void closeEvent(QCloseEvent *event) override;
     bool eventFilter(QObject* obj, QEvent* event) override;
+
 private:
     bool isFileSaved();
     QTabWidget *tabWidget;
