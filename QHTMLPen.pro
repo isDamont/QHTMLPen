@@ -17,7 +17,7 @@ SOURCES += \
 HEADERS += \
     qhtmlpen.h \
     windowhtmlrender.h \
-    FileSystem.h
+    FileSystem.h \
     windowhtmlrender.cpp
 
 HEADERS += \

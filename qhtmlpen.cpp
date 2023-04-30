@@ -1,7 +1,5 @@
 #include "qhtmlpen.h"
 #include "ui_qhtmlpen.h"
-
-
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QDebug>
