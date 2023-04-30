@@ -5,7 +5,6 @@
 #include <QMainWindow>
 #include <QTextEdit>
 #include <QTabWidget>
-#include <QMessageBox>
 #include <QMenu>
 #include <QMap>
 
@@ -26,6 +25,12 @@ public:
 
 private:
     Ui::QHTMLPen *ui;
+
+protected:
+    virtual void closeEvent(QCloseEvent *event) override;
+    bool eventFilter(QObject* obj, QEvent* event) override;
+private:
+    bool isFileSaved();
     QTabWidget *tabWidget;
 
     WindowHtmlRender *windowHTML = nullptr;
