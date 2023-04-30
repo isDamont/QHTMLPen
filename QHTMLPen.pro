@@ -11,11 +11,13 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     qhtmlpen.cpp \
-    windowhtmlrender.cpp
+    windowhtmlrender.cpp \
+    FileSystem.cpp
 
 HEADERS += \
     qhtmlpen.h \
-    windowhtmlrender.h
+    windowhtmlrender.h \
+    FileSystem.h
 
 FORMS += \
     qhtmlpen.ui
