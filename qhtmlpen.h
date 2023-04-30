@@ -2,6 +2,7 @@
 #define QHTMLPEN_H
 
 #include "windowhtmlrender.h"
+#include "FileSystem.h"
 #include <QMainWindow>
 #include <QTextEdit>
 #include <QTabWidget>
@@ -32,6 +33,7 @@ protected:
 private:
     bool isFileSaved();
     QTabWidget *tabWidget;
+    FileSystem *fileSystem = nullptr;
 
     WindowHtmlRender *windowHTML = nullptr;
 

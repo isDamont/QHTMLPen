@@ -14,6 +14,8 @@ QHTMLPen::QHTMLPen(QWidget *parent)
 {
     ui->setupUi(this);
 
+    fileSystem = new FileSystem;
+
     installEventFilter(this);
     
     tabWidget = new QTabWidget(this);
@@ -27,6 +29,7 @@ QHTMLPen::QHTMLPen(QWidget *parent)
 QHTMLPen::~QHTMLPen()
 {
     delete ui;
+    delete fileSystem;
 }
 
 void QHTMLPen::closeEvent(QCloseEvent *event)
@@ -47,7 +50,7 @@ void QHTMLPen::closeEvent(QCloseEvent *event)
         switch (ansver) {
             case QMessageBox::Save:
                 // Вызываем метод для сохранения и игнорируем эвент закрытия
-                slotSaveFile();
+                slotSave();
                 event->ignore();
                 break;
             case QMessageBox::Discard:
@@ -92,7 +95,9 @@ bool QHTMLPen::isFileSaved()
 {
     // проверка сохранения файла
     return false;
-    void QHTMLPen::addNewTab(QString tabName)
+}
+
+void QHTMLPen::addNewTab(QString tabName)
 {
     QTextEdit *textEdit = new QTextEdit(this);
     tabWidget->addTab(textEdit, tabName);
@@ -158,11 +163,19 @@ void QHTMLPen::slotOpen()
 void QHTMLPen::slotSave()
 {
     qDebug() << "slotSave";
+
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    QString text = currentQTextEditWidget->toPlainText();
+    fileSystem->saveFile(text);
 }
 
 void QHTMLPen::slotSaveAs()
 {
     qDebug() << "slotSaveAs";
+
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    QString text = currentQTextEditWidget->toPlainText();
+    fileSystem->saveAs(text);
 }
 
 void QHTMLPen::slotExit()
