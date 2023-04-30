@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui webenginewidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -10,10 +10,12 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    qhtmlpen.cpp
+    qhtmlpen.cpp \
+    windowhtmlrender.cpp
 
 HEADERS += \
-    qhtmlpen.h
+    qhtmlpen.h \
+    windowhtmlrender.h
 
 FORMS += \
     qhtmlpen.ui
