@@ -1,9 +1,14 @@
 #ifndef QHTMLPEN_H
 #define QHTMLPEN_H
 
+#include "windowhtmlrender.h"
 #include <QMainWindow>
+#include <QTextEdit>
+#include <QTabWidget>
+#include <QMessageBox>
 #include <QMenu>
 #include <QMap>
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class QHTMLPen; }
@@ -17,8 +22,13 @@ public:
     QHTMLPen(QWidget *parent = nullptr);
     ~QHTMLPen();
 
+    void addNewTab(QString);
+
 private:
     Ui::QHTMLPen *ui;
+    QTabWidget *tabWidget;
+
+    WindowHtmlRender *windowHTML = nullptr;
 
     QMenu* menuFile;
     QMenu* menuCorrection;
@@ -46,9 +56,5 @@ private slots:
     // слоты меню Просмотр
     void slotRender();
     void slotChangeTextFormat();
-
-
-
-
 };
 #endif // QHTMLPEN_H

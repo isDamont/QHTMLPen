@@ -11,12 +11,23 @@ QHTMLPen::QHTMLPen(QWidget *parent)
 {
     ui->setupUi(this);
 
+    tabWidget = new QTabWidget(this);
+    this->addNewTab(tr("Новая вкладка"));
+    
     menuInitial();
+    
+    setCentralWidget(tabWidget);
 }
 
 QHTMLPen::~QHTMLPen()
 {
     delete ui;
+}
+
+void QHTMLPen::addNewTab(QString tabName)
+{
+    QTextEdit *textEdit = new QTextEdit(this);
+    tabWidget->addTab(textEdit, tabName);
 }
 
 void QHTMLPen::menuInitial()
@@ -119,6 +130,24 @@ void QHTMLPen::slotDelete()
 void QHTMLPen::slotRender()
 {
     qDebug() << "slotRender";
+    
+    if(windowHTML)
+    {
+        delete windowHTML;
+    }
+
+    windowHTML = new WindowHtmlRender(this);
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+
+    if(currentQTextEditWidget)
+    {
+        windowHTML -> updateRender(currentQTextEditWidget);
+        windowHTML -> show();
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("Ошибка"), tr("Ошибка чтенения текущей вкладки"));
+    }
 }
 
 void QHTMLPen::slotChangeTextFormat()
