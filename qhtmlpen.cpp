@@ -210,12 +210,11 @@ void QHTMLPen::slotRender()
 {
     qDebug() << "slotRender";
     
-    if(windowHTML)
+    if(!windowHTML)
     {
-        delete windowHTML;
+        windowHTML = new WindowHtmlRender(this);
     }
 
-    windowHTML = new WindowHtmlRender(this);
     QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
 
     if(currentQTextEditWidget)
