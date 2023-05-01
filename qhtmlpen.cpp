@@ -1,6 +1,7 @@
 #include "qhtmlpen.h"
 #include "ui_qhtmlpen.h"
-
+#include <QCloseEvent>
+#include <QMessageBox>
 #include <QDebug>
 #include <QToolBar>
 #include <QMenuBar>
@@ -11,6 +12,10 @@ QHTMLPen::QHTMLPen(QWidget *parent)
 {
     ui->setupUi(this);
 
+    fileSystem = new FileSystem;
+
+    installEventFilter(this);
+    
     tabWidget = new QTabWidget(this);
     this->addNewTab(tr("Новая вкладка"));
     
@@ -22,6 +27,35 @@ QHTMLPen::QHTMLPen(QWidget *parent)
 QHTMLPen::~QHTMLPen()
 {
     delete ui;
+    delete fileSystem;
+}
+
+bool QHTMLPen::eventFilter(QObject *obj, QEvent *event)
+{
+    if(obj == this)
+    {
+         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+
+         if(keyEvent)
+         {
+             if(keyEvent->modifiers() == Qt::ShiftModifier)
+             {
+                 if(keyEvent->key() == Qt::Key_Escape)
+                 {
+                     close();
+                     return true;
+                 }
+             }
+         }
+    }
+
+    return QObject::eventFilter(obj, event);
+}
+
+bool QHTMLPen::isFileSaved()
+{
+    // проверка сохранения файла
+    return false;
 }
 
 void QHTMLPen::addNewTab(QString tabName)
@@ -77,6 +111,43 @@ void QHTMLPen::menuInitial()
     connect(buttonMenu.value("Изменить форматирование"), &QAction::triggered, this, &QHTMLPen::slotChangeTextFormat);
 }
 
+void QHTMLPen::closeEvent(QCloseEvent *event)
+{
+    if(isFileSaved())
+    {
+         event->accept();
+    }
+    else
+    {
+         QMessageBox askSave(this);
+         askSave.setText(tr("Изменения не сохранены!"));
+         askSave.setInformativeText(tr("Хотите сохранить изменения?"));
+         askSave.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+         askSave.setDefaultButton(QMessageBox::Save);
+         int ansver = askSave.exec();
+
+         switch (ansver) {
+         case QMessageBox::Save:
+             // Вызываем метод для сохранения и игнорируем эвент закрытия
+             slotSave();
+             event->ignore();
+             break;
+         case QMessageBox::Discard:
+             // выходим не сохраняя
+             event->accept();
+             break;
+         case QMessageBox::Cancel:
+             // игнорируем эвент закрытия
+             event->ignore();
+             break;
+         default:
+             // не должно никогда вызываться, но на всякий случай добавлю игнорирование эвента
+             event->ignore();
+             break;
+         }
+    }
+}
+
 void QHTMLPen::slotCreate()
 {
     qDebug() << "slotCreate";
@@ -90,11 +161,19 @@ void QHTMLPen::slotOpen()
 void QHTMLPen::slotSave()
 {
     qDebug() << "slotSave";
+
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    QString text = currentQTextEditWidget->toPlainText();
+    fileSystem->saveFile(text);
 }
 
 void QHTMLPen::slotSaveAs()
 {
     qDebug() << "slotSaveAs";
+
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    QString text = currentQTextEditWidget->toPlainText();
+    fileSystem->saveAs(text);
 }
 
 void QHTMLPen::slotExit()
@@ -154,4 +233,7 @@ void QHTMLPen::slotChangeTextFormat()
 {
     qDebug() << "slotChangeTextFormat";
 }
+
+
+
 

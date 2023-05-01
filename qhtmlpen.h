@@ -2,10 +2,10 @@
 #define QHTMLPEN_H
 
 #include "windowhtmlrender.h"
+#include "FileSystem.h"
 #include <QMainWindow>
 #include <QTextEdit>
 #include <QTabWidget>
-#include <QMessageBox>
 #include <QMenu>
 #include <QMap>
 
@@ -26,7 +26,15 @@ public:
 
 private:
     Ui::QHTMLPen *ui;
+
+protected:
+    virtual void closeEvent(QCloseEvent *event) override;
+    bool eventFilter(QObject* obj, QEvent* event) override;
+
+private:
+    bool isFileSaved();
     QTabWidget *tabWidget;
+    FileSystem *fileSystem = nullptr;
 
     WindowHtmlRender *windowHTML = nullptr;
 
