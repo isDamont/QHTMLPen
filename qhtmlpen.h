@@ -54,7 +54,7 @@ private slots:
     void slotExit();
 
     // слоты меню Правка
-    void slotCansel();
+    void slotCancel();
     void slotCut();
     void slotCopy();
     void slotPaste();
