@@ -11,7 +11,7 @@ qint64 FileSystem::saveFile(const QString& text)
         if(!createFile())
             return writeErr;
     }
-//
+
     return write(text);
 }
 
