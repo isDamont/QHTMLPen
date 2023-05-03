@@ -17,5 +17,5 @@ private:
 private:
     std::unique_ptr<QFile> file;
 };
-
+//
 #endif // FILESYSTEM_H
