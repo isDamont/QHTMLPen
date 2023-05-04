@@ -66,6 +66,23 @@ bool QHTMLPen::isCurrentTabSaved()
     return statusManager->GetStatus(tabWidget->currentIndex());
 }
 
+void QHTMLPen::setTabIconStarVisibleTo(int index, bool visible)
+{
+    QString tabText = tabWidget->tabText(index);
+
+    if(*(tabText.end() - 1) != '*' && visible)
+    {
+         tabText.push_back('*');
+         tabWidget->setTabText(index, tabText);
+    }
+
+    if(*(tabText.end() - 1) == '*' && !visible)
+    {
+         tabText.erase(tabText.end() - 1);
+         tabWidget->setTabText(index, tabText);
+    }
+}
+
 void QHTMLPen::addNewTab(QString tabName)
 {
     QTextEdit *textEdit = new QTextEdit(this);
@@ -75,7 +92,8 @@ void QHTMLPen::addNewTab(QString tabName)
 
     connect(textEdit, &QTextEdit::textChanged, this, [=](){
         statusManager->SetStatusTo(tabWidget->indexOf(textEdit), false);
-        });
+        setTabIconStarVisibleTo(tabWidget->indexOf(textEdit), true);
+    });
 }
 
 void QHTMLPen::menuInitial()
@@ -191,6 +209,7 @@ void QHTMLPen::slotSave()
     fileSystem->saveFile(text);
 
     statusManager->SetStatusTo(tabWidget->currentIndex(), true);
+    setTabIconStarVisibleTo(tabWidget->currentIndex(), false);
 }
 
 void QHTMLPen::slotSaveAs()
@@ -202,6 +221,7 @@ void QHTMLPen::slotSaveAs()
     fileSystem->saveAs(text);
 
     statusManager->SetStatusTo(tabWidget->currentIndex(), true);
+    setTabIconStarVisibleTo(tabWidget->currentIndex(), false);
 }
 
 void QHTMLPen::slotCloseTab()

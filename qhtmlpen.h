@@ -49,6 +49,7 @@ protected:
 private:
     void menuInitial();
     bool isCurrentTabSaved();
+    void setTabIconStarVisibleTo(int index, bool visible);
 
 private slots:
     // слоты меню Файл
