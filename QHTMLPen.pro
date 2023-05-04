@@ -11,18 +11,15 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     qhtmlpen.cpp \
+    savestatusmanager.cpp \
     windowhtmlrender.cpp \
     FileSystem.cpp
 
 HEADERS += \
     qhtmlpen.h \
+    savestatusmanager.h \
     windowhtmlrender.h \
-    FileSystem.h \
-    windowhtmlrender.cpp
-
-HEADERS += \
-    qhtmlpen.h \
-    windowhtmlrender.h
+    FileSystem.h
 
 FORMS += \
     qhtmlpen.ui
