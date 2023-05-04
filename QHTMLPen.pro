@@ -17,12 +17,8 @@ SOURCES += \
 HEADERS += \
     qhtmlpen.h \
     windowhtmlrender.h \
-    FileSystem.h \
-    windowhtmlrender.cpp
+    FileSystem.h
 
-HEADERS += \
-    qhtmlpen.h \
-    windowhtmlrender.h
 
 FORMS += \
     qhtmlpen.ui

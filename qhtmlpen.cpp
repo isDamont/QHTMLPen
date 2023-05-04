@@ -79,6 +79,9 @@ void QHTMLPen::menuInitial()
 
     buttonMenu["Сохранить как"] = menuFile->addAction(tr("Сохранить как"));
     connect(buttonMenu.value("Сохранить как"), &QAction::triggered, this, &QHTMLPen::slotSaveAs);
+
+    buttonMenu["Закрыть вкладку"] = menuFile->addAction(tr("Закрыть вкладку"));
+    connect(buttonMenu.value("Закрыть вкладку"), &QAction::triggered, this, &QHTMLPen::slotCloseTab);
     menuFile->addSeparator();
 
     buttonMenu["Выход"] = menuFile->addAction(tr("Выход"));
@@ -88,7 +91,7 @@ void QHTMLPen::menuInitial()
     menuCorrection = menuBar()->addMenu(tr("Правка"));
     buttonMenu["Отменить"] = menuCorrection->addAction(tr("Отменить"));
     menuCorrection->addSeparator();
-    connect(buttonMenu.value("Отменить"), &QAction::triggered, this, &QHTMLPen::slotCansel);
+    connect(buttonMenu.value("Отменить"), &QAction::triggered, this, &QHTMLPen::slotCancel);
 
     buttonMenu["Вырезать"] = menuCorrection->addAction(tr("Вырезать"));
     connect(buttonMenu.value("Вырезать"), &QAction::triggered, this, &QHTMLPen::slotCut);
@@ -110,6 +113,8 @@ void QHTMLPen::menuInitial()
     buttonMenu["Изменить форматирование"] = menuView->addAction(tr("Изменить форматирование"));
     connect(buttonMenu.value("Изменить форматирование"), &QAction::triggered, this, &QHTMLPen::slotChangeTextFormat);
 }
+
+
 
 void QHTMLPen::closeEvent(QCloseEvent *event)
 {
@@ -176,14 +181,30 @@ void QHTMLPen::slotSaveAs()
     fileSystem->saveAs(text);
 }
 
+void QHTMLPen::slotCloseTab()
+{
+    qDebug() << "slotCloseTab";
+    int index = tabWidget->currentIndex();
+    if(index >= 0){
+
+         if(false/*файл не сохранён*/){  // проверка на сохранение файла
+             // вызов диалогового окна
+         }
+         else{
+             tabWidget->currentWidget()->close();   // закрытие виджета
+             tabWidget->removeTab(index);           // закрытие вкладки
+         }
+    }
+}
+
 void QHTMLPen::slotExit()
 {
     qDebug() << "slotExit";
 }
 
-void QHTMLPen::slotCansel()
+void QHTMLPen::slotCancel()
 {
-    qDebug() << "slotCansel";
+    qDebug() << "slotCancel";
 }
 
 void QHTMLPen::slotCut()
