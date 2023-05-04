@@ -12,7 +12,7 @@ QHTMLPen::QHTMLPen(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::QHTMLPen)
 {
-    //ui->setupUi(this);
+    ui->setupUi(this);
 
     fileSystem = new FileSystem;
 

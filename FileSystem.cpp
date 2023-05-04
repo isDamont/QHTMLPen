@@ -38,7 +38,7 @@ bool FileSystem::createFile()
 
     QString fileName = QFileDialog::getSaveFileName(nullptr, "Сохранить файл",
         QDir::currentPath(), "TXT(*.txt) ;; HTML(*.html) ;; CSS(*.css) ;;\
-        JS(*.js) ;; PHP(*.php) ;; ALL(*.*)", &strFilter );
+        JS(*.js) ;; PHP(*.php) ;; JSON(*.json) ;; ALL(*.*)", &strFilter );
 
     if (!fileName.isEmpty())
     {
@@ -63,6 +63,9 @@ bool FileSystem::createFile()
                 break;
             case FileExtension::PHP:
                 fileName += ".php";
+                break;
+            case FileExtension::JSON:
+                fileName += ".json";
                 break;
         }
 
@@ -90,5 +93,6 @@ void FileSystem::fileExtensionMapInit()
     fileExtension["CSS(*.css)"] = FileExtension::CSS;
     fileExtension["JS(*.js)"] = FileExtension::JS;
     fileExtension["PHP(*.php)"] = FileExtension::PHP;
+    fileExtension["JSON(*.json)"] = FileExtension::JSON;
     fileExtension["ALL(*.*)"] = FileExtension::ALL;
 }

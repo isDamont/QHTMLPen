@@ -8,6 +8,7 @@ enum class FileExtension
     CSS,
     JS,
     PHP,
+    JSON,
     ALL
 };
 
