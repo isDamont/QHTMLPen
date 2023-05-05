@@ -117,7 +117,7 @@ void QHTMLPen::menuInitial()
     menuFile->addSeparator();
 
     buttonMenu["Выход"] = menuFile->addAction(tr("Выход"));
-    connect(buttonMenu.value("Выход"), &QAction::triggered, this, &QHTMLPen::slotExit);
+    connect(buttonMenu.value("Выход"), &QAction::triggered, this, &QHTMLPen::close);
 
     // меню Правка
     menuCorrection = menuBar()->addMenu(tr("Правка"));
@@ -239,11 +239,32 @@ void QHTMLPen::slotSaveAs()
 void QHTMLPen::slotCloseTab()
 {
     qDebug() << "slotCloseTab";
-}
+    int index = tabWidget->currentIndex();
+    if(index >= 0){
 
-void QHTMLPen::slotExit()
-{
-    qDebug() << "slotExit";
+        if(!isCurrentTabSaved()){  // проверка на сохранение файла
+            // вызов диалогового окна
+            QMessageBox askSave(this);
+            askSave.setText(tr("Изменения не сохранены!"));
+            askSave.setInformativeText(tr("Хотите закрыть вкладку без сохранения?"));
+            askSave.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            askSave.setDefaultButton(QMessageBox::Ok);
+
+            if(askSave.exec() == QMessageBox::Cancel)
+            {
+                // если нажали "Отмена", то ничего не делвем
+                return;
+            }
+        }
+
+        if(statusManager)
+        {
+            statusManager->RemoveStatus(tabWidget->currentIndex());
+        }
+
+        tabWidget->currentWidget()->close();   // закрытие виджета
+        tabWidget->removeTab(index);           // закрытие вкладки
+    }
 }
 
 void QHTMLPen::slotCansel()
