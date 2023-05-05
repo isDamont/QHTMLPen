@@ -1,48 +1,31 @@
 
 #include "savestatusmanager.h"
 
-#include <qDebug>
 
-SaveStatusManager::SaveStatusManager()
-{
-}
 
-SaveStatusManager::~SaveStatusManager()
-{
-    saveStatusVector.clear();
-}
-
-bool SaveStatusManager::GetStatus(int index) const
+bool SaveStatusManager::GetStatus(_index index) const
 {
     return saveStatusVector.at(index);
 }
 
-void SaveStatusManager::SetStatusTo(int index, bool status)
+void SaveStatusManager::SetStatusTo(_index index, bool status)
 {
     if(saveStatusVector.size() > index)
     {
-        saveStatusVector.at(index) = status;
+        saveStatusVector[index] = status;
     }
     else
     {
-        AddStatus(index, status);
+        AddStatus(status);
     }
 }
 
-void SaveStatusManager::AddStatus(int index, bool status)
+void SaveStatusManager::AddStatus(bool status)
 {
-    if(index >= saveStatusVector.size())
-    {
-        saveStatusVector.resize(index + 1);
-        saveStatusVector.at(index) = status;
-    }
-    else
-    {
-        saveStatusVector.insert(saveStatusVector.begin() + index, status);
-    }
+    saveStatusVector.push_back(status);
 }
 
-void SaveStatusManager::RemoveStatus(int index)
+void SaveStatusManager::RemoveStatus(_index index)
 {
     if(saveStatusVector.size() <= index)
     {

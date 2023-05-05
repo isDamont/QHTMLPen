@@ -88,12 +88,15 @@ void QHTMLPen::addNewTab(QString tabName)
     QTextEdit *textEdit = new QTextEdit(this);
     tabWidget->addTab(textEdit, tabName);
 
-    statusManager->AddStatus(tabWidget->indexOf(textEdit), true);
+    if(statusManager)
+    {
+        statusManager->AddStatus(true);
 
-    connect(textEdit, &QTextEdit::textChanged, this, [=](){
-        statusManager->SetStatusTo(tabWidget->indexOf(textEdit), false);
-        setTabIconStarVisibleTo(tabWidget->indexOf(textEdit), true);
-    });
+        connect(textEdit, &QTextEdit::textChanged, this, [=](){
+         statusManager->SetStatusTo(tabWidget->indexOf(textEdit), false);
+         setTabIconStarVisibleTo(tabWidget->indexOf(textEdit), true);
+        });
+    }
 }
 
 void QHTMLPen::menuInitial()
@@ -147,14 +150,17 @@ void QHTMLPen::closeEvent(QCloseEvent *event)
 {
     bool allTabsSaved = true;
 
-    for(int index = 0; index < tabWidget->count(); index++)
+    if(statusManager)
     {
-        tabWidget->setCurrentIndex(index);
-
-         if(!isCurrentTabSaved())
+        for(int index = 0; index < tabWidget->count(); index++)
         {
-            allTabsSaved = false;
-            break;
+             tabWidget->setCurrentIndex(index);
+
+             if(!isCurrentTabSaved())
+             {
+                 allTabsSaved = false;
+                 break;
+             }
         }
     }
 
@@ -208,8 +214,11 @@ void QHTMLPen::slotSave()
     QString text = currentQTextEditWidget->toPlainText();
     fileSystem->saveFile(text);
 
-    statusManager->SetStatusTo(tabWidget->currentIndex(), true);
-    setTabIconStarVisibleTo(tabWidget->currentIndex(), false);
+    if(statusManager)
+    {
+        statusManager->SetStatusTo(tabWidget->currentIndex(), true);
+        setTabIconStarVisibleTo(tabWidget->currentIndex(), false);
+    }
 }
 
 void QHTMLPen::slotSaveAs()
@@ -220,8 +229,11 @@ void QHTMLPen::slotSaveAs()
     QString text = currentQTextEditWidget->toPlainText();
     fileSystem->saveAs(text);
 
-    statusManager->SetStatusTo(tabWidget->currentIndex(), true);
-    setTabIconStarVisibleTo(tabWidget->currentIndex(), false);
+    if(statusManager)
+    {
+        statusManager->SetStatusTo(tabWidget->currentIndex(), true);
+        setTabIconStarVisibleTo(tabWidget->currentIndex(), false);
+    }
 }
 
 void QHTMLPen::slotCloseTab()

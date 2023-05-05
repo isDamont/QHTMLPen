@@ -4,15 +4,16 @@
 
 #include <vector>
 
+using _index = unsigned short;
+
+
 class SaveStatusManager
 {
 public:
-    SaveStatusManager();
-    ~SaveStatusManager();
-    bool GetStatus(int index) const;
-    void SetStatusTo(int index, bool status);
-    void AddStatus(int index, bool status);
-    void RemoveStatus(int index);
+    bool GetStatus(_index index) const;
+    void SetStatusTo(_index index, bool status);
+    void AddStatus(bool status);
+    void RemoveStatus(_index index);
 
 private:
     // для проверки сохранения изменений
