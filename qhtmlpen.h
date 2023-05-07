@@ -10,6 +10,8 @@
 #include <QMap>
 
 
+class SaveStatusManager;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class QHTMLPen; }
 QT_END_NAMESPACE
@@ -27,12 +29,6 @@ public:
 private:
     Ui::QHTMLPen *ui;
 
-protected:
-    virtual void closeEvent(QCloseEvent *event) override;
-    bool eventFilter(QObject* obj, QEvent* event) override;
-
-private:
-    bool isFileSaved();
     QTabWidget *tabWidget;
     FileSystem *fileSystem = nullptr;
 
@@ -44,7 +40,16 @@ private:
 
     QMap<QString, QAction*> buttonMenu;
 
+    SaveStatusManager *statusManager = nullptr;
+
+protected:
+    virtual void closeEvent(QCloseEvent *event) override;
+    bool eventFilter(QObject* obj, QEvent* event) override;
+
+private:
     void menuInitial();
+    bool isCurrentTabSaved();
+    void setTabIconStarVisibleTo(int index, bool visible);
 
 private slots:
     // слоты меню Файл
