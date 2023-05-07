@@ -16,6 +16,7 @@ SOURCES += \
     FileSystem.cpp
 
 HEADERS += \
+    DataStructures.h \
     qhtmlpen.h \
     savestatusmanager.h \
     windowhtmlrender.h \

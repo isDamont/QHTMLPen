@@ -114,6 +114,9 @@ void QHTMLPen::menuInitial()
 
     buttonMenu["Сохранить как"] = menuFile->addAction(tr("Сохранить как"));
     connect(buttonMenu.value("Сохранить как"), &QAction::triggered, this, &QHTMLPen::slotSaveAs);
+
+    buttonMenu["Закрыть вкладку"] = menuFile->addAction(tr("Закрыть вкладку"));
+    connect(buttonMenu.value("Закрыть вкладку"), &QAction::triggered, this, &QHTMLPen::slotCloseTab);
     menuFile->addSeparator();
 
     buttonMenu["Выход"] = menuFile->addAction(tr("Выход"));
@@ -123,7 +126,7 @@ void QHTMLPen::menuInitial()
     menuCorrection = menuBar()->addMenu(tr("Правка"));
     buttonMenu["Отменить"] = menuCorrection->addAction(tr("Отменить"));
     menuCorrection->addSeparator();
-    connect(buttonMenu.value("Отменить"), &QAction::triggered, this, &QHTMLPen::slotCansel);
+    connect(buttonMenu.value("Отменить"), &QAction::triggered, this, &QHTMLPen::slotCancel);
 
     buttonMenu["Вырезать"] = menuCorrection->addAction(tr("Вырезать"));
     connect(buttonMenu.value("Вырезать"), &QAction::triggered, this, &QHTMLPen::slotCut);
@@ -145,6 +148,8 @@ void QHTMLPen::menuInitial()
     buttonMenu["Изменить форматирование"] = menuView->addAction(tr("Изменить форматирование"));
     connect(buttonMenu.value("Изменить форматирование"), &QAction::triggered, this, &QHTMLPen::slotChangeTextFormat);
 }
+
+
 
 void QHTMLPen::closeEvent(QCloseEvent *event)
 {
@@ -242,6 +247,22 @@ void QHTMLPen::slotCloseTab()
     int index = tabWidget->currentIndex();
     if(index >= 0){
 
+         if(false/*файл не сохранён*/){  // проверка на сохранение файла
+             // вызов диалогового окна
+         }
+         else{
+             tabWidget->currentWidget()->close();   // закрытие виджета
+             tabWidget->removeTab(index);           // закрытие вкладки
+         }
+    }
+}
+
+void QHTMLPen::slotExit()
+{
+    qDebug() << "slotCloseTab";
+    int index = tabWidget->currentIndex();
+    if(index >= 0){
+
         if(!isCurrentTabSaved()){  // проверка на сохранение файла
             // вызов диалогового окна
             QMessageBox askSave(this);
@@ -267,9 +288,9 @@ void QHTMLPen::slotCloseTab()
     }
 }
 
-void QHTMLPen::slotCansel()
+void QHTMLPen::slotCancel()
 {
-    qDebug() << "slotCansel";
+    qDebug() << "slotCancel";
 }
 
 void QHTMLPen::slotCut()
@@ -296,17 +317,17 @@ void QHTMLPen::slotRender()
 {
     qDebug() << "slotRender";
     
-    if(windowHTML)
+    if(!windowHTML)
     {
-        delete windowHTML;
+        windowHTML = new WindowHtmlRender(this);
     }
 
-    windowHTML = new WindowHtmlRender(this);
     QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
 
     if(currentQTextEditWidget)
     {
-        windowHTML -> updateRender(currentQTextEditWidget);
+        QString html = currentQTextEditWidget->toPlainText();
+        windowHTML -> updateRender(html);
         windowHTML -> show();
     }
     else
@@ -319,7 +340,4 @@ void QHTMLPen::slotChangeTextFormat()
 {
     qDebug() << "slotChangeTextFormat";
 }
-
-
-
 
