@@ -247,22 +247,6 @@ void QHTMLPen::slotCloseTab()
     int index = tabWidget->currentIndex();
     if(index >= 0){
 
-         if(false/*файл не сохранён*/){  // проверка на сохранение файла
-             // вызов диалогового окна
-         }
-         else{
-             tabWidget->currentWidget()->close();   // закрытие виджета
-             tabWidget->removeTab(index);           // закрытие вкладки
-         }
-    }
-}
-
-void QHTMLPen::slotExit()
-{
-    qDebug() << "slotCloseTab";
-    int index = tabWidget->currentIndex();
-    if(index >= 0){
-
         if(!isCurrentTabSaved()){  // проверка на сохранение файла
             // вызов диалогового окна
             QMessageBox askSave(this);
