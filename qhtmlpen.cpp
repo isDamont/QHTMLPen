@@ -55,7 +55,7 @@ bool QHTMLPen::eventFilter(QObject *obj, QEvent *event)
 bool QHTMLPen::isFileSaved()
 {
     // проверка сохранения файла
-    return false;
+    return true;
 }
 
 void QHTMLPen::addNewTab(QString tabName)
@@ -88,7 +88,7 @@ void QHTMLPen::menuInitial()
     menuCorrection = menuBar()->addMenu(tr("Правка"));
     buttonMenu["Отменить"] = menuCorrection->addAction(tr("Отменить"));
     menuCorrection->addSeparator();
-    connect(buttonMenu.value("Отменить"), &QAction::triggered, this, &QHTMLPen::slotCansel);
+    connect(buttonMenu.value("Отменить"), &QAction::triggered, this, &QHTMLPen::slotCancel);
 
     buttonMenu["Вырезать"] = menuCorrection->addAction(tr("Вырезать"));
     connect(buttonMenu.value("Вырезать"), &QAction::triggered, this, &QHTMLPen::slotCut);
@@ -181,7 +181,7 @@ void QHTMLPen::slotExit()
     qDebug() << "slotExit";
 }
 
-void QHTMLPen::slotCansel()
+void QHTMLPen::slotCancel()
 {
     qDebug() << "slotCansel";
 }
@@ -233,7 +233,4 @@ void QHTMLPen::slotChangeTextFormat()
 {
     qDebug() << "slotChangeTextFormat";
 }
-
-
-
 
