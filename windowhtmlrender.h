@@ -12,7 +12,7 @@ public:
     WindowHtmlRender(QWidget *parent = nullptr);
     ~WindowHtmlRender();
 
-    void updateRender(QTextEdit *textEdit);
+    void updateRender(const QString&);
 private:
     QWebEngineView *webView;
 };

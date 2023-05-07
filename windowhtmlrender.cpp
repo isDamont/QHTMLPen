@@ -3,19 +3,21 @@
 WindowHtmlRender::WindowHtmlRender(QWidget *parent)
     : QMainWindow(parent)
 {
-    setWindowTitle("html render");
-    this->resize(800, 600);
+    this->resize(parent->size());
 
     webView = new QWebEngineView(this);
     setCentralWidget(webView);
+
+    QObject::connect(webView, &QWebEngineView::titleChanged, this, [=](const QString& title){
+        setWindowTitle(title + " - QHTMLPen Render");
+    });
 }
 
 WindowHtmlRender::~WindowHtmlRender()
 {
 }
 
-void WindowHtmlRender::updateRender(QTextEdit *textEdit)
+void WindowHtmlRender::updateRender(const QString& text)
 {
-    QString html = textEdit->toPlainText();
-    webView->setHtml(html);
+    webView->setHtml(text);
 }
