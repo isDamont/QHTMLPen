@@ -18,13 +18,7 @@ HEADERS += \
     DataStructures.h \
     qhtmlpen.h \
     windowhtmlrender.h \
-    FileSystem.h\
-    windowhtmlrender.cpp
-
-HEADERS += \
-    qhtmlpen.h \
-    windowhtmlrender.h\
-    DataStructures.h
+    FileSystem.h \
 
 FORMS += \
     qhtmlpen.ui
