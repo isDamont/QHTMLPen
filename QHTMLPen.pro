@@ -15,10 +15,10 @@ SOURCES += \
     FileSystem.cpp
 
 HEADERS += \
+    DataStructures.h \
     qhtmlpen.h \
     windowhtmlrender.h \
     FileSystem.h
-
 
 FORMS += \
     qhtmlpen.ui

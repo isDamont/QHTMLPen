@@ -1,7 +1,13 @@
 #include <QFileDialog>
 #include "FileSystem.h"
+#include "DataStructures.h"
 
 //Возвращает количество записанных байт, если ошибка -1
+FileSystem::FileSystem()
+{
+    fileExtensionMapInit();
+}
+
 qint64 FileSystem::saveFile(const QString& text)
 {
     //Если объекта QFile не существует, создаём его
@@ -28,14 +34,43 @@ qint64 FileSystem::saveAs(const QString &text)
 //Метод создаёт новый объект QFile
 bool FileSystem::createFile()
 {
+    QString strFilter="*.txt";
+
     QString fileName = QFileDialog::getSaveFileName(nullptr, "Сохранить файл",
-    QDir::currentPath(), "All(*.*) ;; txt(*.txt)");
+        QDir::currentPath(), "TXT(*.txt) ;; HTML(*.html) ;; CSS(*.css) ;;\
+        JS(*.js) ;; PHP(*.php) ;; JSON(*.json) ;; ALL(*.*)", &strFilter );
 
     if (!fileName.isEmpty())
     {
         //Освобождаем умный указатель для возможноти создания нового
         file.release();
+
+        switch(fileExtension[strFilter])
+        {
+            case FileExtension::ALL:
+                break;
+            case FileExtension::TXT:
+                fileName += ".txt";
+                break;
+            case FileExtension::HTML:
+                fileName += ".html";
+                break;
+            case FileExtension::CSS:
+                fileName += ".css";
+                break;
+            case FileExtension::JS:
+                fileName += ".js";
+                break;
+            case FileExtension::PHP:
+                fileName += ".php";
+                break;
+            case FileExtension::JSON:
+                fileName += ".json";
+                break;
+        }
+
         file = std::make_unique<QFile>(fileName);
+
         return true;
     }
 
@@ -49,4 +84,15 @@ qint64 FileSystem::write(const QString& text)
     file->close();
 
     return bytesWritten;
+}
+
+void FileSystem::fileExtensionMapInit()
+{
+    fileExtension["TXT(*.txt)"] = FileExtension::TXT;
+    fileExtension["HTML(*.html)"] = FileExtension::HTML;
+    fileExtension["CSS(*.css)"] = FileExtension::CSS;
+    fileExtension["JS(*.js)"] = FileExtension::JS;
+    fileExtension["PHP(*.php)"] = FileExtension::PHP;
+    fileExtension["JSON(*.json)"] = FileExtension::JSON;
+    fileExtension["ALL(*.*)"] = FileExtension::ALL;
 }

@@ -55,7 +55,7 @@ bool QHTMLPen::eventFilter(QObject *obj, QEvent *event)
 bool QHTMLPen::isFileSaved()
 {
     // проверка сохранения файла
-    return false;
+    return true;
 }
 
 void QHTMLPen::addNewTab(QString tabName)
@@ -231,17 +231,17 @@ void QHTMLPen::slotRender()
 {
     qDebug() << "slotRender";
     
-    if(windowHTML)
+    if(!windowHTML)
     {
-        delete windowHTML;
+        windowHTML = new WindowHtmlRender(this);
     }
 
-    windowHTML = new WindowHtmlRender(this);
     QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
 
     if(currentQTextEditWidget)
     {
-        windowHTML -> updateRender(currentQTextEditWidget);
+        QString html = currentQTextEditWidget->toPlainText();
+        windowHTML -> updateRender(html);
         windowHTML -> show();
     }
     else
@@ -254,7 +254,4 @@ void QHTMLPen::slotChangeTextFormat()
 {
     qDebug() << "slotChangeTextFormat";
 }
-
-
-
 
