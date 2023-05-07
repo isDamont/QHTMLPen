@@ -219,7 +219,8 @@ void QHTMLPen::slotRender()
 
     if(currentQTextEditWidget)
     {
-        windowHTML -> updateRender(currentQTextEditWidget);
+        QString html = currentQTextEditWidget->toPlainText();
+        windowHTML -> updateRender(html);
         windowHTML -> show();
     }
     else

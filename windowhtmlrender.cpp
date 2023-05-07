@@ -17,8 +17,7 @@ WindowHtmlRender::~WindowHtmlRender()
 {
 }
 
-void WindowHtmlRender::updateRender(QTextEdit *textEdit)
+void WindowHtmlRender::updateRender(const QString& text)
 {
-    QString html = textEdit->toPlainText();
-    webView->setHtml(html);
+    webView->setHtml(text);
 }
