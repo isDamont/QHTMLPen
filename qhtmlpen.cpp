@@ -1,4 +1,5 @@
 #include "qhtmlpen.h"
+#include "formatdialog.h"
 #include "savestatusmanager.h"
 #include "ui_qhtmlpen.h"
 #include <QCloseEvent>
@@ -359,5 +360,19 @@ void QHTMLPen::slotRender()
 void QHTMLPen::slotChangeTextFormat()
 {
     qDebug() << "slotChangeTextFormat";
+
+    FormatDialog formatDialog;
+
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+
+    if(currentQTextEditWidget)
+    {
+        formatDialog.initDialog(currentQTextEditWidget);
+        formatDialog.exec();
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("Ошибка"), tr("Ошибка чтенения текущей вкладки"));
+    }
 }
 
