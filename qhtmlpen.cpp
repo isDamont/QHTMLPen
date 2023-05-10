@@ -281,6 +281,24 @@ void QHTMLPen::slotCancel()
 void QHTMLPen::slotCut()
 {
     qDebug() << "slotCut";
+
+    // Копируем текст в буфер обмена c помощью ранее созданного метода
+    slotCopy();
+
+    // Получаем текущий выделенный текст
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+
+    // Проверяем на удачный каст
+    if(currentQTextEditWidget)
+    {
+        // Удаляем выделенный текст
+        QTextCursor cursor = currentQTextEditWidget->textCursor();
+        cursor.removeSelectedText();
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("Ошибка"), tr("Ошибка чтенения текущей вкладки"));
+    }
 }
 
 void QHTMLPen::slotCopy()
