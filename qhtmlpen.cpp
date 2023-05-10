@@ -33,26 +33,19 @@ QHTMLPen::~QHTMLPen()
     delete statusManager;
 }
 
-bool QHTMLPen::eventFilter(QObject *obj, QEvent *event)
+void QHTMLPen::keyPressEvent(QKeyEvent *ev)
 {
-    if(obj == this)
+    if(ev->modifiers() == Qt::ShiftModifier)
     {
-         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-
-         if(keyEvent)
-         {
-             if(keyEvent->modifiers() == Qt::ShiftModifier)
-             {
-                 if(keyEvent->key() == Qt::Key_Escape)
-                 {
-                     close();
-                     return true;
-                 }
-             }
-         }
+        // выход
+        if(ev->key() == Qt::Key_Escape)
+        {
+            close();
+            return;
+        }
     }
 
-    return QObject::eventFilter(obj, event);
+    QWidget::keyPressEvent(ev);
 }
 
 bool QHTMLPen::isCurrentTabSaved()

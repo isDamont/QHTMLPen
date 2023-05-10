@@ -44,7 +44,7 @@ private:
 
 protected:
     virtual void closeEvent(QCloseEvent *event) override;
-    bool eventFilter(QObject* obj, QEvent* event) override;
+    void keyPressEvent(QKeyEvent *ev) override;
 
 private:
     void menuInitial();
