@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QToolBar>
 #include <QMenuBar>
+#include <QClipboard>
 
 QHTMLPen::QHTMLPen(QWidget *parent)
     : QMainWindow(parent)
@@ -285,6 +286,23 @@ void QHTMLPen::slotCut()
 void QHTMLPen::slotCopy()
 {
     qDebug() << "slotCopy";
+
+    // Получаем текущий выделенный текст
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+
+    // Проверяем на удачный каст
+    if(currentQTextEditWidget)
+    {
+        QString selectedText = currentQTextEditWidget->textCursor().selectedText();
+
+        // Копируем текст в буфер обмена
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(selectedText);
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("Ошибка"), tr("Ошибка чтенения текущей вкладки"));
+    }
 }
 
 void QHTMLPen::slotPaste()
