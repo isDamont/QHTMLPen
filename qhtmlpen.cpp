@@ -15,11 +15,9 @@ QHTMLPen::QHTMLPen(QWidget *parent)
 
     fileSystem = new FileSystem;
     statusManager = new SaveStatusManager;
-
-    installEventFilter(this);
     
     tabWidget = new QTabWidget(this);
-    this->addNewTab(tr("Новая вкладка"));
+    this->addNewTab();
     
     menuInitial();
     
@@ -37,11 +35,29 @@ void QHTMLPen::keyPressEvent(QKeyEvent *ev)
 {
     if(ev->modifiers() == Qt::ShiftModifier)
     {
-        // выход
-        if(ev->key() == Qt::Key_Escape)
-        {
+        switch (ev->key()) {
+        // Выход
+        case Qt::Key_Escape:
             close();
             return;
+            /* Надо придумать комбинации клавишь
+            по умолчанию Qt не работает с произвольными клавишами */
+//        // Создать вкладку
+//        case Qt::Key_N:
+//            addNewTab();
+//            return;
+//        // Закрыть вкладку
+//        case Qt::Key_C:
+//            slotCloseTab();
+//            return;
+//        // Сохранить вкладку
+//        case Qt::Key_S:
+//            slotSave();
+//            return;
+//        // Открыть файл
+//        case Qt::Key_O:
+//            slotOpen();
+//            return;
         }
     }
 
@@ -196,7 +212,7 @@ void QHTMLPen::closeEvent(QCloseEvent *event)
 void QHTMLPen::slotCreate()
 {
     qDebug() << "slotCreate";
-    addNewTab("Новая вкладка");
+    addNewTab();
 }
 
 void QHTMLPen::slotOpen()

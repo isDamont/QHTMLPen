@@ -24,7 +24,7 @@ public:
     QHTMLPen(QWidget *parent = nullptr);
     ~QHTMLPen();
 
-    void addNewTab(QString);
+    void addNewTab(QString = tr("Новая вкладка"));
 
 private:
     Ui::QHTMLPen *ui;
