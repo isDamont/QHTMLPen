@@ -2,7 +2,7 @@
 #define QHTMLPEN_H
 
 #include "windowhtmlrender.h"
-#include "FileSystem.h"
+#include "filetabwidget.h"
 #include <QMainWindow>
 #include <QTextEdit>
 #include <QTabWidget>
@@ -29,9 +29,7 @@ public:
 private:
     Ui::QHTMLPen *ui;
 
-    QTabWidget *tabWidget;
-    FileSystem *fileSystem = nullptr;
-
+    FileTabWidget *tabWidget = nullptr;
     WindowHtmlRender *windowHTML = nullptr;
 
     QMenu* menuFile;
@@ -40,24 +38,17 @@ private:
 
     QMap<QString, QAction*> buttonMenu;
 
-    SaveStatusManager *statusManager = nullptr;
-
 protected:
     virtual void closeEvent(QCloseEvent *event) override;
     void keyPressEvent(QKeyEvent *ev) override;
 
 private:
     void menuInitial();
-    bool isCurrentTabSaved();
-    void setTabIconStarVisibleTo(int index, bool visible);
 
 private slots:
     // слоты меню Файл
     void slotCreate();
     void slotOpen();
-    void slotSave();
-    void slotSaveAs();
-    void slotCloseTab();
 
     // слоты меню Правка
     void slotCancel();
