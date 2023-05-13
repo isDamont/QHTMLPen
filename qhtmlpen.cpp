@@ -1,4 +1,5 @@
 #include "qhtmlpen.h"
+#include "formatdialog.h"
 #include "savestatusmanager.h"
 #include "ui_qhtmlpen.h"
 #include <QCloseEvent>
@@ -300,11 +301,46 @@ void QHTMLPen::slotRepeat()
 void QHTMLPen::slotCut()
 {
     qDebug() << "slotCut";
+
+    // Копируем текст в буфер обмена c помощью ранее созданного метода
+    slotCopy();
+
+    // Получаем текущий выделенный текст
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+
+    // Проверяем на удачный каст
+    if(currentQTextEditWidget)
+    {
+        // Удаляем выделенный текст
+        QTextCursor cursor = currentQTextEditWidget->textCursor();
+        cursor.removeSelectedText();
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("Ошибка"), tr("Ошибка чтенения текущей вкладки"));
+    }
 }
 
 void QHTMLPen::slotCopy()
 {
     qDebug() << "slotCopy";
+
+    // Получаем текущий выделенный текст
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+
+    // Проверяем на удачный каст
+    if(currentQTextEditWidget)
+    {
+        QString selectedText = currentQTextEditWidget->textCursor().selectedText();
+
+        // Копируем текст в буфер обмена
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(selectedText);
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("Ошибка"), tr("Ошибка чтенения текущей вкладки"));
+    }
 }
 
 void QHTMLPen::slotPaste()
@@ -352,5 +388,19 @@ void QHTMLPen::slotRender()
 void QHTMLPen::slotChangeTextFormat()
 {
     qDebug() << "slotChangeTextFormat";
+
+    FormatDialog formatDialog;
+
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+
+    if(currentQTextEditWidget)
+    {
+        formatDialog.initDialog(currentQTextEditWidget);
+        formatDialog.exec();
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("Ошибка"), tr("Ошибка чтенения текущей вкладки"));
+    }
 }
 

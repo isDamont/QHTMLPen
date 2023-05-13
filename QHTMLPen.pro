@@ -9,6 +9,7 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    formatdialog.cpp \
     main.cpp \
     qhtmlpen.cpp \
     savestatusmanager.cpp \
@@ -17,6 +18,7 @@ SOURCES += \
 
 HEADERS += \
     DataStructures.h \
+    formatdialog.h \
     qhtmlpen.h \
     savestatusmanager.h \
     windowhtmlrender.h \
