@@ -11,6 +11,7 @@ public:
     FileSystem();
     qint64 saveFile(const QString& text);
     qint64 saveAs(const QString& text);
+    QString openFile();
 
 private:
     bool createFile();
@@ -20,6 +21,8 @@ private:
 private:
     std::unique_ptr<QFile> file;
     std::unordered_map<QString, FileExtension> fileExtension;
+    QString const strFilter = "ALL(*) ;; TXT(*.txt) ;; HTML(*.html) ;; CSS(*.css) ;;\
+            JS(*.js) ;; PHP(*.php) ;; JSON(*.json)";
 };
 
 #endif // FILESYSTEM_H

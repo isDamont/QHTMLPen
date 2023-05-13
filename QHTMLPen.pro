@@ -10,6 +10,7 @@ CONFIG += c++17
 
 SOURCES += \
     filetabwidget.cpp \
+    formatdialog.cpp \
     main.cpp \
     qhtmlpen.cpp \
     windowhtmlrender.cpp \
@@ -18,6 +19,7 @@ SOURCES += \
 HEADERS += \
     DataStructures.h \
     filetabwidget.h \
+    formatdialog.h \
     qhtmlpen.h \
     windowhtmlrender.h \
     FileSystem.h

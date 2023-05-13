@@ -1,10 +1,14 @@
 #include "qhtmlpen.h"
+
+#include "formatdialog.h"
+#include "savestatusmanager.h"
 #include "ui_qhtmlpen.h"
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QDebug>
 #include <QToolBar>
 #include <QMenuBar>
+#include <QClipboard>
 
 QHTMLPen::QHTMLPen(QWidget *parent)
     : QMainWindow(parent)
@@ -25,10 +29,18 @@ QHTMLPen::QHTMLPen(QWidget *parent)
         });
     }
 
+
     this->addNewTab();
     
     menuInitial();
     
+    installEventFilter(this);
+    
+    menuInitial();
+
+    tabWidget = new QTabWidget(this);
+    this->addNewTab(tr("Новая вкладка"));
+       
     setCentralWidget(tabWidget);
 }
 
@@ -103,8 +115,11 @@ void QHTMLPen::menuInitial()
     // меню Правка
     menuCorrection = menuBar()->addMenu(tr("Правка"));
     buttonMenu["Отменить"] = menuCorrection->addAction(tr("Отменить"));
-    menuCorrection->addSeparator();
     connect(buttonMenu.value("Отменить"), &QAction::triggered, this, &QHTMLPen::slotCancel);
+
+    buttonMenu["Повторить"] = menuCorrection->addAction(tr("Повторить"));
+    connect(buttonMenu.value("Повторить"), &QAction::triggered, this, &QHTMLPen::slotRepeat);
+    menuCorrection->addSeparator();
 
     buttonMenu["Вырезать"] = menuCorrection->addAction(tr("Вырезать"));
     connect(buttonMenu.value("Вырезать"), &QAction::triggered, this, &QHTMLPen::slotCut);
@@ -172,31 +187,91 @@ void QHTMLPen::slotCreate()
 void QHTMLPen::slotOpen()
 {
     qDebug() << "slotOpen";
+    QTextEdit *textEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    if(textEdit != nullptr)
+        textEdit->setPlainText(fileSystem->openFile());
 }
 
 void QHTMLPen::slotCancel()
 {
     qDebug() << "slotCancel";
+    QTextEdit* tempTextEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    if(tempTextEdit){
+        tempTextEdit->undo();
+    }
+}
+
+void QHTMLPen::slotRepeat()
+{
+    qDebug() << "slotRepeat";
+    QTextEdit* tempTextEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    if(tempTextEdit){
+        tempTextEdit->redo();
+    }
 }
 
 void QHTMLPen::slotCut()
 {
     qDebug() << "slotCut";
+
+    // Копируем текст в буфер обмена c помощью ранее созданного метода
+    slotCopy();
+
+    // Получаем текущий выделенный текст
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+
+    // Проверяем на удачный каст
+    if(currentQTextEditWidget)
+    {
+        // Удаляем выделенный текст
+        QTextCursor cursor = currentQTextEditWidget->textCursor();
+        cursor.removeSelectedText();
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("Ошибка"), tr("Ошибка чтенения текущей вкладки"));
+    }
 }
 
 void QHTMLPen::slotCopy()
 {
     qDebug() << "slotCopy";
+
+    // Получаем текущий выделенный текст
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+
+    // Проверяем на удачный каст
+    if(currentQTextEditWidget)
+    {
+        QString selectedText = currentQTextEditWidget->textCursor().selectedText();
+
+        // Копируем текст в буфер обмена
+        QClipboard *clipboard = QApplication::clipboard();
+        clipboard->setText(selectedText);
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("Ошибка"), tr("Ошибка чтенения текущей вкладки"));
+    }
 }
 
 void QHTMLPen::slotPaste()
 {
     qDebug() << "slotPaste";
+    QTextEdit* tempTextEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    if(tempTextEdit){
+        tempTextEdit->paste();
+    }
 }
 
 void QHTMLPen::slotDelete()
 {
     qDebug() << "slotDelete";
+
+    QTextEdit* tempTextEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    if(tempTextEdit){
+        tempTextEdit->textCursor().removeSelectedText();
+    }
 }
 
 void QHTMLPen::slotRender()
@@ -225,5 +300,19 @@ void QHTMLPen::slotRender()
 void QHTMLPen::slotChangeTextFormat()
 {
     qDebug() << "slotChangeTextFormat";
+
+    FormatDialog formatDialog;
+
+    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+
+    if(currentQTextEditWidget)
+    {
+        formatDialog.initDialog(currentQTextEditWidget);
+        formatDialog.exec();
+    }
+    else
+    {
+        QMessageBox::critical(nullptr, tr("Ошибка"), tr("Ошибка чтенения текущей вкладки"));
+    }
 }
 

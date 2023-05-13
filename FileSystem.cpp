@@ -4,6 +4,7 @@
 
 //Возвращает количество записанных байт, если ошибка -1
 FileSystem::FileSystem()
+    : file(std::make_unique<QFile>())
 {
     fileExtensionMapInit();
 }
@@ -11,7 +12,7 @@ FileSystem::FileSystem()
 qint64 FileSystem::saveFile(const QString& text)
 {
     //Если объекта QFile не существует, создаём его
-    if(!file)
+    if(!file->isOpen())
     {
         //Если файл не создан не вызываем метод write иначе вылет
         if(!createFile())
@@ -31,45 +32,63 @@ qint64 FileSystem::saveAs(const QString &text)
     return write(text);
 }
 
-//Метод создаёт новый объект QFile
-bool FileSystem::createFile()
+//Возвращает текст из файла
+QString FileSystem::openFile()
 {
-    QString strFilter="*.txt";
-
-    QString fileName = QFileDialog::getSaveFileName(nullptr, "Сохранить файл",
-        QDir::currentPath(), "TXT(*.txt) ;; HTML(*.html) ;; CSS(*.css) ;;\
-        JS(*.js) ;; PHP(*.php) ;; JSON(*.json) ;; ALL(*.*)", &strFilter );
+    QString fileName = QFileDialog::getOpenFileName(nullptr, "Открыть файл",
+        QDir::currentPath(), strFilter);
 
     if (!fileName.isEmpty())
     {
-        //Освобождаем умный указатель для возможноти создания нового
-        file.release();
-
-        switch(fileExtension[strFilter])
+        file->setFileName(fileName);
+        if (file->open(QFile::ReadOnly | QFile::WriteOnly | QFile::ExistingOnly))
         {
-            case FileExtension::ALL:
-                break;
-            case FileExtension::TXT:
-                fileName += ".txt";
-                break;
-            case FileExtension::HTML:
-                fileName += ".html";
-                break;
-            case FileExtension::CSS:
-                fileName += ".css";
-                break;
-            case FileExtension::JS:
-                fileName += ".js";
-                break;
-            case FileExtension::PHP:
-                fileName += ".php";
-                break;
-            case FileExtension::JSON:
-                fileName += ".json";
-                break;
+            QTextStream stream(file.get());
+            return stream.readAll();
+        }
+    }
+
+    return nullptr;
+}
+
+//Метод создаёт новый объект QFile
+bool FileSystem::createFile()
+{
+    QString strSelFilter="*.txt";
+
+    QString fileName = QFileDialog::getSaveFileName(nullptr, "Сохранить файл",
+        QDir::currentPath(), strFilter, &strSelFilter );
+
+    if (!fileName.isEmpty())
+    {
+        if(fileName.indexOf('.') == -1)
+        {
+            switch(fileExtension[strSelFilter])
+            {
+                case FileExtension::ALL:
+                    break;
+                case FileExtension::TXT:
+                    fileName += ".txt";
+                    break;
+                case FileExtension::HTML:
+                    fileName += ".html";
+                    break;
+                case FileExtension::CSS:
+                    fileName += ".css";
+                    break;
+                case FileExtension::JS:
+                    fileName += ".js";
+                    break;
+                case FileExtension::PHP:
+                    fileName += ".php";
+                    break;
+                case FileExtension::JSON:
+                    fileName += ".json";
+                    break;
+            }
         }
 
-        file = std::make_unique<QFile>(fileName);
+        file->setFileName(fileName);
 
         return true;
     }
@@ -94,5 +113,5 @@ void FileSystem::fileExtensionMapInit()
     fileExtension["JS(*.js)"] = FileExtension::JS;
     fileExtension["PHP(*.php)"] = FileExtension::PHP;
     fileExtension["JSON(*.json)"] = FileExtension::JSON;
-    fileExtension["ALL(*.*)"] = FileExtension::ALL;
+    fileExtension["ALL(*)"] = FileExtension::ALL;
 }
