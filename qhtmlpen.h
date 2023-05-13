@@ -48,7 +48,6 @@ private:
 private slots:
     // слоты меню Файл
     void slotCreate();
-    void slotOpen();
 
     // слоты меню Правка
     void slotCancel();

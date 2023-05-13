@@ -1,7 +1,6 @@
 #include "qhtmlpen.h"
 
 #include "formatdialog.h"
-#include "savestatusmanager.h"
 #include "ui_qhtmlpen.h"
 #include <QCloseEvent>
 #include <QMessageBox>
@@ -28,18 +27,10 @@ QHTMLPen::QHTMLPen(QWidget *parent)
             }
         });
     }
-
+    
+    menuInitial();
 
     this->addNewTab();
-    
-    menuInitial();
-    
-    installEventFilter(this);
-    
-    menuInitial();
-
-    tabWidget = new QTabWidget(this);
-    this->addNewTab(tr("Новая вкладка"));
        
     setCentralWidget(tabWidget);
 }
@@ -79,14 +70,13 @@ void QHTMLPen::keyPressEvent(QKeyEvent *ev)
 //            return;
         }
     }
-
-    QWidget::keyPressEvent(ev);
 }
 
 void QHTMLPen::addNewTab(QString tabName)
 {
     QTextEdit *textEdit = new QTextEdit(this);
     tabWidget->addTab(textEdit, tabName);
+
 }
 
 void QHTMLPen::menuInitial()
@@ -97,7 +87,7 @@ void QHTMLPen::menuInitial()
     connect(buttonMenu.value("Создать"), &QAction::triggered, this, &QHTMLPen::slotCreate);
 
     buttonMenu["Открыть"] = menuFile->addAction(tr("Открыть"));
-    connect(buttonMenu.value("Открыть"), &QAction::triggered, this, &QHTMLPen::slotOpen);
+    connect(buttonMenu.value("Открыть"), &QAction::triggered, tabWidget, &FileTabWidget::slotOpen);
 
     buttonMenu["Сохранить"] = menuFile->addAction(tr("Сохранить"));
     connect(buttonMenu.value("Сохранить"), &QAction::triggered, tabWidget, &FileTabWidget::slotSaveCurrentTab);
@@ -182,14 +172,6 @@ void QHTMLPen::slotCreate()
 {
     qDebug() << "slotCreate";
     addNewTab();
-}
-
-void QHTMLPen::slotOpen()
-{
-    qDebug() << "slotOpen";
-    QTextEdit *textEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
-    if(textEdit != nullptr)
-        textEdit->setPlainText(fileSystem->openFile());
 }
 
 void QHTMLPen::slotCancel()
