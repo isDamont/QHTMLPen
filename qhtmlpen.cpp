@@ -209,6 +209,11 @@ void QHTMLPen::slotCreate()
 void QHTMLPen::slotOpen()
 {
     qDebug() << "slotOpen";
+    QTextEdit* textEdit = nullptr;
+    textEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    if(textEdit != nullptr)
+        textEdit->setPlainText(fileSystem->openFile());
+
 }
 
 void QHTMLPen::slotSave()

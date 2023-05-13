@@ -4,6 +4,7 @@
 
 //Возвращает количество записанных байт, если ошибка -1
 FileSystem::FileSystem()
+    : file(std::make_unique<QFile>())
 {
     fileExtensionMapInit();
 }
@@ -11,7 +12,7 @@ FileSystem::FileSystem()
 qint64 FileSystem::saveFile(const QString& text)
 {
     //Если объекта QFile не существует, создаём его
-    if(!file)
+    if(!file->isOpen())
     {
         //Если файл не создан не вызываем метод write иначе вылет
         if(!createFile())
@@ -31,22 +32,39 @@ qint64 FileSystem::saveAs(const QString &text)
     return write(text);
 }
 
+QString FileSystem::openFile()
+{
+    QString fileName = QFileDialog::getOpenFileName(nullptr, "Открыть файл",
+        QDir::currentPath(), strFilter);
+
+    if (!fileName.isEmpty())
+    {
+        file->setFileName(fileName);
+        if (file->open(QFile::ReadOnly | QFile::WriteOnly | QFile::ExistingOnly))
+        {
+            QTextStream stream(file.get());
+            return stream.readAll();
+        }
+    }
+
+    return nullptr;
+}
+
 //Метод создаёт новый объект QFile
 bool FileSystem::createFile()
 {
-    QString strFilter="*.txt";
+    QString strSelFilter="*.txt";
 
     QString fileName = QFileDialog::getSaveFileName(nullptr, "Сохранить файл",
-        QDir::currentPath(), "ALL(*) ;; TXT(*.txt) ;; HTML(*.html) ;; CSS(*.css) ;;\
-        JS(*.js) ;; PHP(*.php) ;; JSON(*.json)", &strFilter );
+        QDir::currentPath(), strFilter, &strSelFilter );
 
     if (!fileName.isEmpty())
     {
         //Освобождаем умный указатель для возможноти создания нового
-        file.release();
+        //file.release();
         if(fileName.indexOf('.') == -1)
         {
-            switch(fileExtension[strFilter])
+            switch(fileExtension[strSelFilter])
             {
                 case FileExtension::ALL:
                     break;
@@ -71,8 +89,8 @@ bool FileSystem::createFile()
             }
         }
 
-
-        file = std::make_unique<QFile>(fileName);
+        file->setFileName(fileName);
+        //file = std::make_unique<QFile>(fileName);
 
         return true;
     }
