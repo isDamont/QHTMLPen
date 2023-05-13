@@ -37,37 +37,40 @@ bool FileSystem::createFile()
     QString strFilter="*.txt";
 
     QString fileName = QFileDialog::getSaveFileName(nullptr, "Сохранить файл",
-        QDir::currentPath(), "TXT(*.txt) ;; HTML(*.html) ;; CSS(*.css) ;;\
-        JS(*.js) ;; PHP(*.php) ;; JSON(*.json) ;; ALL(*.*)", &strFilter );
+        QDir::currentPath(), "ALL(*) ;; TXT(*.txt) ;; HTML(*.html) ;; CSS(*.css) ;;\
+        JS(*.js) ;; PHP(*.php) ;; JSON(*.json)", &strFilter );
 
     if (!fileName.isEmpty())
     {
         //Освобождаем умный указатель для возможноти создания нового
         file.release();
-
-        switch(fileExtension[strFilter])
+        if(fileName.indexOf('.') == -1)
         {
-            case FileExtension::ALL:
-                break;
-            case FileExtension::TXT:
-                fileName += ".txt";
-                break;
-            case FileExtension::HTML:
-                fileName += ".html";
-                break;
-            case FileExtension::CSS:
-                fileName += ".css";
-                break;
-            case FileExtension::JS:
-                fileName += ".js";
-                break;
-            case FileExtension::PHP:
-                fileName += ".php";
-                break;
-            case FileExtension::JSON:
-                fileName += ".json";
-                break;
+            switch(fileExtension[strFilter])
+            {
+                case FileExtension::ALL:
+                    break;
+                case FileExtension::TXT:
+                    fileName += ".txt";
+                    break;
+                case FileExtension::HTML:
+                    fileName += ".html";
+                    break;
+                case FileExtension::CSS:
+                    fileName += ".css";
+                    break;
+                case FileExtension::JS:
+                    fileName += ".js";
+                    break;
+                case FileExtension::PHP:
+                    fileName += ".php";
+                    break;
+                case FileExtension::JSON:
+                    fileName += ".json";
+                    break;
+            }
         }
+
 
         file = std::make_unique<QFile>(fileName);
 
@@ -94,5 +97,5 @@ void FileSystem::fileExtensionMapInit()
     fileExtension["JS(*.js)"] = FileExtension::JS;
     fileExtension["PHP(*.php)"] = FileExtension::PHP;
     fileExtension["JSON(*.json)"] = FileExtension::JSON;
-    fileExtension["ALL(*.*)"] = FileExtension::ALL;
+    fileExtension["ALL(*)"] = FileExtension::ALL;
 }
