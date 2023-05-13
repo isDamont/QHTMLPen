@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QToolBar>
 #include <QMenuBar>
+#include <QClipboard>
 
 QHTMLPen::QHTMLPen(QWidget *parent)
     : QMainWindow(parent)
@@ -18,11 +19,11 @@ QHTMLPen::QHTMLPen(QWidget *parent)
 
     installEventFilter(this);
     
+    menuInitial();
+
     tabWidget = new QTabWidget(this);
     this->addNewTab(tr("Новая вкладка"));
-    
-    menuInitial();
-    
+       
     setCentralWidget(tabWidget);
 }
 
@@ -125,8 +126,11 @@ void QHTMLPen::menuInitial()
     // меню Правка
     menuCorrection = menuBar()->addMenu(tr("Правка"));
     buttonMenu["Отменить"] = menuCorrection->addAction(tr("Отменить"));
-    menuCorrection->addSeparator();
     connect(buttonMenu.value("Отменить"), &QAction::triggered, this, &QHTMLPen::slotCancel);
+
+    buttonMenu["Повторить"] = menuCorrection->addAction(tr("Повторить"));
+    connect(buttonMenu.value("Повторить"), &QAction::triggered, this, &QHTMLPen::slotRepeat);
+    menuCorrection->addSeparator();
 
     buttonMenu["Вырезать"] = menuCorrection->addAction(tr("Вырезать"));
     connect(buttonMenu.value("Вырезать"), &QAction::triggered, this, &QHTMLPen::slotCut);
@@ -278,6 +282,19 @@ void QHTMLPen::slotCloseTab()
 void QHTMLPen::slotCancel()
 {
     qDebug() << "slotCancel";
+    QTextEdit* tempTextEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    if(tempTextEdit){
+        tempTextEdit->undo();
+    }
+}
+
+void QHTMLPen::slotRepeat()
+{
+    qDebug() << "slotRepeat";
+    QTextEdit* tempTextEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    if(tempTextEdit){
+        tempTextEdit->redo();
+    }
 }
 
 void QHTMLPen::slotCut()
@@ -293,11 +310,20 @@ void QHTMLPen::slotCopy()
 void QHTMLPen::slotPaste()
 {
     qDebug() << "slotPaste";
+    QTextEdit* tempTextEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    if(tempTextEdit){
+        tempTextEdit->paste();
+    }
 }
 
 void QHTMLPen::slotDelete()
 {
     qDebug() << "slotDelete";
+
+    QTextEdit* tempTextEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
+    if(tempTextEdit){
+        tempTextEdit->textCursor().removeSelectedText();
+    }
 }
 
 void QHTMLPen::slotRender()
