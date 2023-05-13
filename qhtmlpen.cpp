@@ -1,4 +1,5 @@
 #include "qhtmlpen.h"
+
 #include "formatdialog.h"
 #include "savestatusmanager.h"
 #include "ui_qhtmlpen.h"
@@ -14,10 +15,25 @@ QHTMLPen::QHTMLPen(QWidget *parent)
     , ui(new Ui::QHTMLPen)
 {
     ui->setupUi(this);
+    
+    tabWidget = new FileTabWidget(this);
 
-    fileSystem = new FileSystem;
-    statusManager = new SaveStatusManager;
+    if(tabWidget)    // делаем проверку указателя
+    {
+        // при удалении последней вкладки создаём новую
+        connect(tabWidget, &FileTabWidget::signalTabRemoved, this, [=](){
+            if(tabWidget->count() == 0)
+            {
+                this->addNewTab();
+            }
+        });
+    }
 
+
+    this->addNewTab();
+    
+    menuInitial();
+    
     installEventFilter(this);
     
     menuInitial();
@@ -31,74 +47,46 @@ QHTMLPen::QHTMLPen(QWidget *parent)
 QHTMLPen::~QHTMLPen()
 {
     delete ui;
-    delete fileSystem;
-    delete statusManager;
+    delete tabWidget;
 }
 
-bool QHTMLPen::eventFilter(QObject *obj, QEvent *event)
+void QHTMLPen::keyPressEvent(QKeyEvent *ev)
 {
-    if(obj == this)
+    if(ev->modifiers() == Qt::ShiftModifier)
     {
-         QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-
-         if(keyEvent)
-         {
-             if(keyEvent->modifiers() == Qt::ShiftModifier)
-             {
-                 if(keyEvent->key() == Qt::Key_Escape)
-                 {
-                     close();
-                     return true;
-                 }
-             }
-         }
+        switch (ev->key()) {
+        // Выход
+        case Qt::Key_Escape:
+            close();
+            return;
+            /* Надо придумать комбинации клавишь
+            по умолчанию Qt не работает с произвольными клавишами */
+//        // Создать вкладку
+//        case Qt::Key_N:
+//            addNewTab();
+//            return;
+//        // Закрыть вкладку
+//        case Qt::Key_C:
+//            slotCloseTab();
+//            return;
+//        // Сохранить вкладку
+//        case Qt::Key_S:
+//            slotSave();
+//            return;
+//        // Открыть файл
+//        case Qt::Key_O:
+//            slotOpen();
+//            return;
+        }
     }
 
-    return QObject::eventFilter(obj, event);
-}
-
-bool QHTMLPen::isCurrentTabSaved()
-{
-    // проверка сохранения файла
-    if(tabWidget->count() == 0)
-    {
-         return true;
-    }
-
-    return statusManager->GetStatus(tabWidget->currentIndex());
-}
-
-void QHTMLPen::setTabIconStarVisibleTo(int index, bool visible)
-{
-    QString tabText = tabWidget->tabText(index);
-
-    if(*(tabText.end() - 1) != '*' && visible)
-    {
-         tabText.push_back('*');
-         tabWidget->setTabText(index, tabText);
-    }
-
-    if(*(tabText.end() - 1) == '*' && !visible)
-    {
-         tabText.erase(tabText.end() - 1);
-         tabWidget->setTabText(index, tabText);
-    }
+    QWidget::keyPressEvent(ev);
 }
 
 void QHTMLPen::addNewTab(QString tabName)
 {
     QTextEdit *textEdit = new QTextEdit(this);
     tabWidget->addTab(textEdit, tabName);
-
-    if(statusManager)
-    {
-        statusManager->AddStatus(true);
-
-        connect(textEdit, &QTextEdit::textChanged, this, [=](){
-         statusManager->SetStatusTo(tabWidget->indexOf(textEdit), false);
-         setTabIconStarVisibleTo(tabWidget->indexOf(textEdit), true);
-        });
-    }
 }
 
 void QHTMLPen::menuInitial()
@@ -112,13 +100,13 @@ void QHTMLPen::menuInitial()
     connect(buttonMenu.value("Открыть"), &QAction::triggered, this, &QHTMLPen::slotOpen);
 
     buttonMenu["Сохранить"] = menuFile->addAction(tr("Сохранить"));
-    connect(buttonMenu.value("Сохранить"), &QAction::triggered, this, &QHTMLPen::slotSave);
+    connect(buttonMenu.value("Сохранить"), &QAction::triggered, tabWidget, &FileTabWidget::slotSaveCurrentTab);
 
     buttonMenu["Сохранить как"] = menuFile->addAction(tr("Сохранить как"));
-    connect(buttonMenu.value("Сохранить как"), &QAction::triggered, this, &QHTMLPen::slotSaveAs);
+    connect(buttonMenu.value("Сохранить как"), &QAction::triggered, tabWidget, &FileTabWidget::slotSaveCurrentTabAs);
 
     buttonMenu["Закрыть вкладку"] = menuFile->addAction(tr("Закрыть вкладку"));
-    connect(buttonMenu.value("Закрыть вкладку"), &QAction::triggered, this, &QHTMLPen::slotCloseTab);
+    connect(buttonMenu.value("Закрыть вкладку"), &QAction::triggered, tabWidget, &FileTabWidget::slotCloseCurrentTab);
     menuFile->addSeparator();
 
     buttonMenu["Выход"] = menuFile->addAction(tr("Выход"));
@@ -158,24 +146,9 @@ void QHTMLPen::menuInitial()
 
 void QHTMLPen::closeEvent(QCloseEvent *event)
 {
-    bool allTabsSaved = true;
-
-    if(statusManager)
+    if(tabWidget->areAllTabsSaved())
     {
-        for(int index = 0; index < tabWidget->count(); index++)
-        {
-             tabWidget->setCurrentIndex(index);
-
-             if(!isCurrentTabSaved())
-             {
-                 allTabsSaved = false;
-                 break;
-             }
-        }
-    }
-
-    if(allTabsSaved)
-    {
+        // если все вкладки сохранены, то принимаем эвент
         event->accept();
     }
     else
@@ -208,7 +181,7 @@ void QHTMLPen::closeEvent(QCloseEvent *event)
 void QHTMLPen::slotCreate()
 {
     qDebug() << "slotCreate";
-    addNewTab("Новая вкладка");
+    addNewTab();
 }
 
 void QHTMLPen::slotOpen()
@@ -217,67 +190,6 @@ void QHTMLPen::slotOpen()
     QTextEdit *textEdit = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
     if(textEdit != nullptr)
         textEdit->setPlainText(fileSystem->openFile());
-}
-
-void QHTMLPen::slotSave()
-{
-    qDebug() << "slotSave";
-
-    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
-    QString text = currentQTextEditWidget->toPlainText();
-    fileSystem->saveFile(text);
-
-    if(statusManager)
-    {
-        statusManager->SetStatusTo(tabWidget->currentIndex(), true);
-        setTabIconStarVisibleTo(tabWidget->currentIndex(), false);
-    }
-}
-
-void QHTMLPen::slotSaveAs()
-{
-    qDebug() << "slotSaveAs";
-
-    QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(tabWidget->currentWidget());
-    QString text = currentQTextEditWidget->toPlainText();
-    fileSystem->saveAs(text);
-
-    if(statusManager)
-    {
-        statusManager->SetStatusTo(tabWidget->currentIndex(), true);
-        setTabIconStarVisibleTo(tabWidget->currentIndex(), false);
-    }
-}
-
-void QHTMLPen::slotCloseTab()
-{
-    qDebug() << "slotCloseTab";
-    int index = tabWidget->currentIndex();
-    if(index >= 0){
-
-        if(!isCurrentTabSaved()){  // проверка на сохранение файла
-            // вызов диалогового окна
-            QMessageBox askSave(this);
-            askSave.setText(tr("Изменения не сохранены!"));
-            askSave.setInformativeText(tr("Хотите закрыть вкладку без сохранения?"));
-            askSave.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-            askSave.setDefaultButton(QMessageBox::Ok);
-
-            if(askSave.exec() == QMessageBox::Cancel)
-            {
-                // если нажали "Отмена", то ничего не делвем
-                return;
-            }
-        }
-
-        if(statusManager)
-        {
-            statusManager->RemoveStatus(tabWidget->currentIndex());
-        }
-
-        tabWidget->currentWidget()->close();   // закрытие виджета
-        tabWidget->removeTab(index);           // закрытие вкладки
-    }
 }
 
 void QHTMLPen::slotCancel()
