@@ -32,6 +32,7 @@ qint64 FileSystem::saveAs(const QString &text)
     return write(text);
 }
 
+//Возвращает текст из файла
 QString FileSystem::openFile()
 {
     QString fileName = QFileDialog::getOpenFileName(nullptr, "Открыть файл",
@@ -60,8 +61,6 @@ bool FileSystem::createFile()
 
     if (!fileName.isEmpty())
     {
-        //Освобождаем умный указатель для возможноти создания нового
-        //file.release();
         if(fileName.indexOf('.') == -1)
         {
             switch(fileExtension[strSelFilter])
@@ -90,7 +89,6 @@ bool FileSystem::createFile()
         }
 
         file->setFileName(fileName);
-        //file = std::make_unique<QFile>(fileName);
 
         return true;
     }
