@@ -124,6 +124,8 @@ void FileTabWidget::tabInserted(int index)
             setTabIconStarVisibleTo(indexOf(textEdit), true);
         });
     }
+
+    setCurrentIndex(index);
 }
 
 void FileTabWidget::tabRemoved(int index)
@@ -136,4 +138,15 @@ void FileTabWidget::tabRemoved(int index)
 
     // подаём сигнал об удалении вкладки
     emit signalTabRemoved();
+}
+
+void FileTabWidget::slotOpen()
+{
+    qDebug() << "slotOpen";
+
+    addTab(new QTextEdit(this), "Файл открыли");
+
+    QTextEdit *textEdit = qobject_cast<QTextEdit*>(this->currentWidget());
+    if(textEdit != nullptr)
+        textEdit->setPlainText(fileSystem->openFile());
 }

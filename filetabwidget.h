@@ -17,6 +17,7 @@ public slots:
     void slotSaveCurrentTab();
     void slotSaveCurrentTabAs();
     void slotCloseCurrentTab();
+    void slotOpen();
 
 signals:
     // сигнал при удалении вкладки
