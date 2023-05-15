@@ -53,7 +53,12 @@ void FileTabWidget::slotSaveCurrentTab()
     }
 
     QString text = currentQTextEditWidget->toPlainText();
-    fileSystem->saveFile(text);
+
+    // если при сохранении вернётся ошибка, то мы выходим не меняя статуса
+    if(fileSystem->saveFile(text) == writeErr)
+    {
+        return;
+    }
 
     //меняем статус вкладки
     saveStatusVector.at(currentIndex) = true;
@@ -72,7 +77,12 @@ void FileTabWidget::slotSaveCurrentTabAs()
     }
 
     QString text = currentQTextEditWidget->toPlainText();
-    fileSystem->saveAs(text);
+
+    // если при сохранении вернётся ошибка, то мы выходим не меняя статуса
+    if(fileSystem->saveAs(text) == writeErr)
+    {
+        return;
+    }
 
     //меняем статус вкладки
     saveStatusVector.at(currentIndex) = true;
