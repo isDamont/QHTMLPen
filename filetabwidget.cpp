@@ -144,9 +144,23 @@ void FileTabWidget::slotOpen()
 {
     qDebug() << "slotOpen";
 
-    addTab(new QTextEdit(this), "Файл открыли");
+    // сначала пытаемся откыть файл
+    QString fileText = fileSystem->openFile();
 
-    QTextEdit *textEdit = qobject_cast<QTextEdit*>(this->currentWidget());
+    // усли нет текста, значит не открыли и можно выходить
+    if(fileText == nullptr)
+    {
+        return;
+    }
+
+    // получаем индекс новой вкладки
+    int index = addTab(new QTextEdit(this), "Файл открыли");
+
+    QTextEdit *textEdit = qobject_cast<QTextEdit*>(widget(index));
     if(textEdit != nullptr)
-        textEdit->setPlainText(fileSystem->openFile());
+        textEdit->setPlainText(fileText);
+
+    // кастыль) так как у нас сработает сигнал textchanged() после setPlainText()
+    saveStatusVector.at(index) = true;
+    setTabIconStarVisibleTo(index, false);
 }
