@@ -27,6 +27,8 @@ public:
     FileTabWidget(QWidget *parent = nullptr);
     // проверка статуса всех вкладок
     bool areAllTabsSaved();
+    // игнорирование вопроса о сохранении изменений
+    bool doWithoutSaving(const QString& textResponse);
 
 protected:
     // переопределяем для наших задач

@@ -42,6 +42,25 @@ void FileTabWidget::setTabIconStarVisibleTo(int index, bool visible)
     }
 }
 
+bool FileTabWidget::doWithoutSaving(const QString &textResponse)
+{
+    // вызов диалогового окна
+    QMessageBox askSave(this);
+    askSave.setText(tr("Изменения не сохранены!"));
+    askSave.setInformativeText(textResponse);
+    askSave.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    askSave.setDefaultButton(QMessageBox::Ok);
+
+    switch (askSave.exec()) {
+    case QMessageBox::Ok :
+        return true;
+    case QMessageBox::Cancel :
+        return false;
+    default:
+        return false;
+    }
+}
+
 void FileTabWidget::slotSaveCurrentTab()
 {
     QTextEdit* currentQTextEditWidget = qobject_cast<QTextEdit*>(currentWidget());
@@ -94,16 +113,9 @@ void FileTabWidget::slotCloseCurrentTab()
 {
     // проверяем индекс
     if(currentIndex >= 0){
-
         if(!saveStatusVector.at(currentIndex)){  // проверка на сохранение файла
-            // вызов диалогового окна
-            QMessageBox askSave(this);
-            askSave.setText(tr("Изменения не сохранены!"));
-            askSave.setInformativeText(tr("Хотите закрыть вкладку без сохранения?"));
-            askSave.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-            askSave.setDefaultButton(QMessageBox::Ok);
-
-            if(askSave.exec() == QMessageBox::Cancel)
+            // запрос на закрытие без сохранения
+            if(!doWithoutSaving(tr("Хотите закрыть вкладку без сохранения?")))
             {
                 // если нажали "Отмена", то ничего не делвем
                 return;
@@ -164,12 +176,4 @@ void FileTabWidget::slotOpen()
     }
 
     addTab(new QTextEdit(fileText, this), "Файл открыли");
-
-//    QTextEdit *textEdit = qobject_cast<QTextEdit*>(widget(index));
-//    if(textEdit != nullptr)
-//        textEdit->setPlainText(fileText);
-
-    // кастыль) так как у нас сработает сигнал textchanged() после setPlainText()
-//    saveStatusVector.at(index) = true;
-//    setTabIconStarVisibleTo(index, false);
 }
