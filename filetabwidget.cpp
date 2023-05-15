@@ -163,14 +163,13 @@ void FileTabWidget::slotOpen()
         return;
     }
 
-    // получаем индекс новой вкладки
-    int index = addTab(new QTextEdit(this), "Файл открыли");
+    addTab(new QTextEdit(fileText, this), "Файл открыли");
 
-    QTextEdit *textEdit = qobject_cast<QTextEdit*>(widget(index));
-    if(textEdit != nullptr)
-        textEdit->setPlainText(fileText);
+//    QTextEdit *textEdit = qobject_cast<QTextEdit*>(widget(index));
+//    if(textEdit != nullptr)
+//        textEdit->setPlainText(fileText);
 
     // кастыль) так как у нас сработает сигнал textchanged() после setPlainText()
-    saveStatusVector.at(index) = true;
-    setTabIconStarVisibleTo(index, false);
+//    saveStatusVector.at(index) = true;
+//    setTabIconStarVisibleTo(index, false);
 }
