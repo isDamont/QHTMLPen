@@ -1,4 +1,5 @@
 #include "filetabwidget.h"
+#include "qapplication.h"
 
 #include <QMessageBox>
 #include <QTextEdit>
@@ -50,6 +51,7 @@ bool FileTabWidget::doWithoutSaving(const QString &textResponse)
     askSave.setInformativeText(textResponse);
     askSave.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
     askSave.setDefaultButton(QMessageBox::Ok);
+    askSave.setWindowModality(Qt::ApplicationModal);
 
     switch (askSave.exec()) {
     case QMessageBox::Ok :
