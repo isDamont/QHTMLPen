@@ -9,18 +9,18 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    filetabwidget.cpp \
     formatdialog.cpp \
     main.cpp \
     qhtmlpen.cpp \
-    savestatusmanager.cpp \
     windowhtmlrender.cpp \
     FileSystem.cpp
 
 HEADERS += \
     DataStructures.h \
+    filetabwidget.h \
     formatdialog.h \
     qhtmlpen.h \
-    savestatusmanager.h \
     windowhtmlrender.h \
     FileSystem.h
 
