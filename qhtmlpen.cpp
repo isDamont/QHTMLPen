@@ -29,6 +29,7 @@ QHTMLPen::QHTMLPen(QWidget *parent)
     }
     
     menuInitial();
+    shortCutInitial();
 
     this->addNewTab();
        
@@ -41,42 +42,26 @@ QHTMLPen::~QHTMLPen()
     delete tabWidget;
 }
 
-void QHTMLPen::keyPressEvent(QKeyEvent *ev)
-{
-    if(ev->modifiers() == Qt::ShiftModifier)
-    {
-        switch (ev->key()) {
-        // Выход
-        case Qt::Key_Escape:
-            close();
-            return;
-            /* Надо придумать комбинации клавишь
-            по умолчанию Qt не работает с произвольными клавишами */
-//        // Создать вкладку
-//        case Qt::Key_N:
-//            addNewTab();
-//            return;
-//        // Закрыть вкладку
-//        case Qt::Key_C:
-//            slotCloseTab();
-//            return;
-//        // Сохранить вкладку
-//        case Qt::Key_S:
-//            slotSave();
-//            return;
-//        // Открыть файл
-//        case Qt::Key_O:
-//            slotOpen();
-//            return;
-        }
-    }
-}
-
 void QHTMLPen::addNewTab(QString tabName)
 {
     QTextEdit *textEdit = new QTextEdit(this);
-    tabWidget->addTab(textEdit, tabName);
+    tabWidget->addTab(textEdit, tabName);   
+}
 
+void QHTMLPen::shortCutInitial()
+{
+// Выход
+    buttonMenu.value("Выход")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Escape));
+// Создать вкладку
+    buttonMenu.value("Создать")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_N));
+// Закрыть вкладку
+    buttonMenu.value("Закрыть вкладку")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_X));
+// Сохранить вкладку
+    buttonMenu.value("Сохранить")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
+// Открыть файл
+    buttonMenu.value("Открыть")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_O));
+// Рендер
+    buttonMenu.value("Рендеринг")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
 }
 
 void QHTMLPen::menuInitial()

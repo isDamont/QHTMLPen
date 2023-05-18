@@ -38,9 +38,10 @@ private:
 
     QMap<QString, QAction*> buttonMenu;
 
+    void shortCutInitial();
+
 protected:
     virtual void closeEvent(QCloseEvent *event) override;
-    void keyPressEvent(QKeyEvent *ev) override;
 
 private:
     void menuInitial();
@@ -61,4 +62,5 @@ private slots:
     void slotRender();
     void slotChangeTextFormat();
 };
+
 #endif // QHTMLPEN_H
