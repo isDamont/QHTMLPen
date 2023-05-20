@@ -102,50 +102,50 @@ void QHTMLPen::addNewTab(QString tabName)
 void QHTMLPen::menuInitial()
 {
     // меню Файл
-    menuFile = menuBar()->addMenu(tr("Файл"));
-    buttonMenu["Создать"] = menuFile->addAction(tr("Создать"));
+    menuFile = menuBar()->addMenu(tr("&Файл"));
+    buttonMenu["Создать"] = menuFile->addAction(tr("Соз&дать"));
     connect(buttonMenu.value("Создать"), &QAction::triggered, this, &QHTMLPen::slotCreate);
 
-    buttonMenu["Открыть"] = menuFile->addAction(tr("Открыть"));
+    buttonMenu["Открыть"] = menuFile->addAction(tr("&Открыть"));
     connect(buttonMenu.value("Открыть"), &QAction::triggered, this, &QHTMLPen::slotOpen);
 
-    buttonMenu["Сохранить"] = menuFile->addAction(tr("Сохранить"));
+    buttonMenu["Сохранить"] = menuFile->addAction(tr("&Сохранить"));
     connect(buttonMenu.value("Сохранить"), &QAction::triggered, this, &QHTMLPen::slotSave);
 
-    buttonMenu["Сохранить как"] = menuFile->addAction(tr("Сохранить как"));
+    buttonMenu["Сохранить как"] = menuFile->addAction(tr("Сохранить &как"));
     connect(buttonMenu.value("Сохранить как"), &QAction::triggered, this, &QHTMLPen::slotSaveAs);
 
-    buttonMenu["Закрыть вкладку"] = menuFile->addAction(tr("Закрыть вкладку"));
+    buttonMenu["Закрыть вкладку"] = menuFile->addAction(tr("&Закрыть вкладку"));
     connect(buttonMenu.value("Закрыть вкладку"), &QAction::triggered, this, &QHTMLPen::slotCloseTab);
     menuFile->addSeparator();
 
-    buttonMenu["Выход"] = menuFile->addAction(tr("Выход"));
+    buttonMenu["Выход"] = menuFile->addAction(tr("&Выход"));
     connect(buttonMenu.value("Выход"), &QAction::triggered, this, &QHTMLPen::close);
 
     // меню Правка
-    menuCorrection = menuBar()->addMenu(tr("Правка"));
-    buttonMenu["Отменить"] = menuCorrection->addAction(tr("Отменить"));
+    menuCorrection = menuBar()->addMenu(tr("&Правка"));
+    buttonMenu["Отменить"] = menuCorrection->addAction(tr("&Отменить"));
     menuCorrection->addSeparator();
     connect(buttonMenu.value("Отменить"), &QAction::triggered, this, &QHTMLPen::slotCancel);
 
-    buttonMenu["Вырезать"] = menuCorrection->addAction(tr("Вырезать"));
+    buttonMenu["Вырезать"] = menuCorrection->addAction(tr("&Вырезать"));
     connect(buttonMenu.value("Вырезать"), &QAction::triggered, this, &QHTMLPen::slotCut);
 
-    buttonMenu["Копировать"] = menuCorrection->addAction(tr("Копировать"));
+    buttonMenu["Копировать"] = menuCorrection->addAction(tr("&Копировать"));
     connect(buttonMenu.value("Копировать"), &QAction::triggered, this, &QHTMLPen::slotCopy);
 
-    buttonMenu["Вставить"] = menuCorrection->addAction(tr("Вставить"));
+    buttonMenu["Вставить"] = menuCorrection->addAction(tr("В&ставить"));
     connect(buttonMenu.value("Вставить"), &QAction::triggered, this, &QHTMLPen::slotPaste);
 
-    buttonMenu["Удалить"] = menuCorrection->addAction(tr("Удалить"));
+    buttonMenu["Удалить"] = menuCorrection->addAction(tr("&Удалить"));
     connect(buttonMenu.value("Удалить"), &QAction::triggered, this, &QHTMLPen::slotDelete);
 
     // меню Просмотр
-    menuView = menuBar()->addMenu(tr("Просмотр"));
-    buttonMenu["Рендеринг"] = menuView->addAction(tr("Рендеринг"));
+    menuView = menuBar()->addMenu(tr("Прос&мотр"));
+    buttonMenu["Рендеринг"] = menuView->addAction(tr("&Рендеринг"));
     connect(buttonMenu.value("Рендеринг"), &QAction::triggered, this, &QHTMLPen::slotRender);
 
-    buttonMenu["Изменить форматирование"] = menuView->addAction(tr("Изменить форматирование"));
+    buttonMenu["Изменить форматирование"] = menuView->addAction(tr("&Изменить форматирование"));
     connect(buttonMenu.value("Изменить форматирование"), &QAction::triggered, this, &QHTMLPen::slotChangeTextFormat);
 }
 
