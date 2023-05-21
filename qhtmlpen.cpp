@@ -73,16 +73,16 @@ void QHTMLPen::menuInitial()
 
 
     buttonMenu["Открыть"] = menuFile->addAction(tr("&Открыть"));
-    connect(buttonMenu.value("Открыть"), &QAction::triggered, this, &QHTMLPen::slotOpen);
+    connect(buttonMenu.value("Открыть"), &QAction::triggered, tabWidget, &FileTabWidget::slotOpen);
 
     buttonMenu["Сохранить"] = menuFile->addAction(tr("&Сохранить"));
-    connect(buttonMenu.value("Сохранить"), &QAction::triggered, this, &QHTMLPen::slotSave);
+    connect(buttonMenu.value("Сохранить"), &QAction::triggered, tabWidget, &FileTabWidget::slotSaveCurrentTab);
 
     buttonMenu["Сохранить как"] = menuFile->addAction(tr("Сохранить &как"));
-    connect(buttonMenu.value("Сохранить как"), &QAction::triggered, this, &QHTMLPen::slotSaveAs);
+    connect(buttonMenu.value("Сохранить как"), &QAction::triggered, tabWidget, &FileTabWidget::slotSaveCurrentTabAs);
 
     buttonMenu["Закрыть вкладку"] = menuFile->addAction(tr("&Закрыть вкладку"));
-    connect(buttonMenu.value("Закрыть вкладку"), &QAction::triggered, this, &QHTMLPen::slotCloseTab);
+    connect(buttonMenu.value("Закрыть вкладку"), &QAction::triggered, tabWidget, &FileTabWidget::slotCloseCurrentTab);
     menuFile->addSeparator();
 
     buttonMenu["Выход"] = menuFile->addAction(tr("&Выход"));

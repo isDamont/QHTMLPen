@@ -161,7 +161,7 @@ void FileTabWidget::slotSaveCurrentTabAs()
     setTabText(currentIndex, fileName);
   
     //меняем статус вкладки
-    saveStatusVector.at(currentIndex) = true;
+    //saveStatusVector.at(currentIndex) = true;
 
     // убираем звёздочку
     setTabIconStarVisibleTo(currentIndex, false);
