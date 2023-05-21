@@ -131,27 +131,16 @@ void QHTMLPen::closeEvent(QCloseEvent *event)
     }
     else
     {
-        QMessageBox askSave(this);
-        askSave.setText(tr("Изменения не сохранены!"));
-        askSave.setInformativeText(tr("Хотите выйти без сохранения?"));
-        askSave.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-        askSave.setDefaultButton(QMessageBox::Ok);
-
-        int ansver = askSave.exec();
-
-        switch (ansver) {
-        case QMessageBox::Ok:
-            // выходим без сохранения
+        // запрос на выход без сохранения
+        if(tabWidget->doWithoutSaving(tr("Хотите выйти без сохранения?")))
+        {
+            // если подтвердили, принимаем эвент
             event->accept();
-            break;
-        case QMessageBox::Cancel:
-            // игнорируем эвент закрытия
+        }
+        else
+        {
+            // иначе игнорируем
             event->ignore();
-            break;
-        default:
-            // не должно никогда вызываться, но на всякий случай добавлю игнорирование эвента
-            event->ignore();
-            break;
         }
     }
 }
