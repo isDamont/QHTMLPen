@@ -1,4 +1,5 @@
 #include <QFileDialog>
+#include <QFileInfo>
 #include "FileSystem.h"
 #include "DataStructures.h"
 
@@ -23,17 +24,21 @@ qint64 FileSystem::saveFile(const QString& text)
 }
 
 //Возвращает количество записанных байт, если ошибка -1
-qint64 FileSystem::saveAs(const QString &text)
+qint64 FileSystem::saveAs(const QString &text, QString &fileNameBuffer)
 {
     //Если файл не создан не вызываем метод write иначе вылет
     if(!createFile())
         return writeErr;
 
+    //имя файла без пути
+    QFileInfo info(file->fileName());
+    fileNameBuffer = info.baseName();
+
     return write(text);
 }
 
 //Возвращает текст из файла
-QString FileSystem::openFile()
+QString FileSystem::openFile(QString &fileNameBuffer)
 {
     QString fileName = QFileDialog::getOpenFileName(nullptr, "Открыть файл",
         QDir::currentPath(), strFilter);
@@ -44,6 +49,10 @@ QString FileSystem::openFile()
         if (file->open(QFile::ReadOnly | QFile::WriteOnly | QFile::ExistingOnly))
         {
             QTextStream stream(file.get());
+            //имя файла без пути
+            QFileInfo info(fileName);
+            fileNameBuffer = info.baseName();
+
             return stream.readAll();
         }
     }

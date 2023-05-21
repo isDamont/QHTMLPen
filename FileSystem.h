@@ -10,8 +10,8 @@ class FileSystem
 public:
     FileSystem();
     qint64 saveFile(const QString& text);
-    qint64 saveAs(const QString& text);
-    QString openFile();
+    qint64 saveAs(const QString& text, QString &fileNameBuffer);
+    QString openFile(QString &fileNameBuffer);
 
 private:
     bool createFile();

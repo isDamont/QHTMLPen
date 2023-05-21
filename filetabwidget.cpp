@@ -72,8 +72,11 @@ void FileTabWidget::slotSaveCurrentTabAs()
     }
 
     QString text = currentQTextEditWidget->toPlainText();
-    fileSystem->saveAs(text);
+    QString fileName ="Новая вкладка";
+    fileSystem->saveAs(text, fileName);
 
+    //меняем имя вкладки
+    setTabText(currentIndex, fileName);
     //меняем статус вкладки
     saveStatusVector.at(currentIndex) = true;
     // убираем звёздочку
@@ -143,10 +146,12 @@ void FileTabWidget::tabRemoved(int index)
 void FileTabWidget::slotOpen()
 {
     qDebug() << "slotOpen";
-
+    QString fileName = "";
     addTab(new QTextEdit(this), "Файл открыли");
 
     QTextEdit *textEdit = qobject_cast<QTextEdit*>(this->currentWidget());
-    if(textEdit != nullptr)
-        textEdit->setPlainText(fileSystem->openFile());
+    if(textEdit != nullptr){
+        textEdit->setPlainText(fileSystem->openFile(fileName));
+        setTabText(currentIndex, fileName);
+    }
 }
