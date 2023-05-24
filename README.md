@@ -18,7 +18,8 @@ To build this project, you will need Qt 6.2 or higher and a C++17 compiler. You 
 
 ```bash
 # qmake
-qmake QHTMLPen.pro make
+qmake QHTMLPen.pro 
+make
 
 # Run the executable
 ./QHTMLPen
