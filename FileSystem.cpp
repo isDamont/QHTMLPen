@@ -12,33 +12,29 @@ FileSystem::FileSystem()
 
 qint64 FileSystem::saveFile(const QString& text)
 {
-    //Если объекта QFile не существует, создаём его
-    if(!file->isOpen())
+    QFileInfo info(file->fileName());
+    //Если объекта QFile не существует, вызываем метод сохранить как...
+    if(!info.exists())
     {
         //Если файл не создан не вызываем метод write иначе вылет
-        if(!createFile())
-            return writeErr;
+        return saveAs(text);
     }
 
     return write(text);
 }
 
 //Возвращает количество записанных байт, если ошибка -1
-qint64 FileSystem::saveAs(const QString &text, QString &fileNameBuffer)
+qint64 FileSystem::saveAs(const QString &text)
 {
     //Если файл не создан не вызываем метод write иначе вылет
     if(!createFile())
         return writeErr;
 
-    //имя файла без пути
-    QFileInfo info(file->fileName());
-    fileNameBuffer = info.baseName();
-
     return write(text);
 }
 
 //Возвращает текст из файла
-QString FileSystem::openFile(QString &fileNameBuffer)
+QString FileSystem::openFile()
 {
     QString fileName = QFileDialog::getOpenFileName(nullptr, "Открыть файл",
         QDir::currentPath(), strFilter);
@@ -49,15 +45,20 @@ QString FileSystem::openFile(QString &fileNameBuffer)
         if (file->open(QFile::ReadOnly | QFile::WriteOnly | QFile::ExistingOnly))
         {
             QTextStream stream(file.get());
-            //имя файла без пути
-            QFileInfo info(fileName);
-            fileNameBuffer = info.baseName();
 
-            return stream.readAll();
+            QString textReturn = stream.readAll();
+            file->close();
+            return textReturn;
         }
     }
 
     return nullptr;
+}
+
+QString FileSystem::getFileName()
+{
+    QFileInfo info(file->fileName());
+    return info.baseName() + '.' +info.suffix();
 }
 
 //Метод создаёт новый объект QFile
@@ -107,7 +108,9 @@ bool FileSystem::createFile()
 
 qint64 FileSystem::write(const QString& text)
 {
-    file->open(QFile::WriteOnly | QFile::Text);
+    if(!file->isOpen()){
+        file->open(QFile::WriteOnly | QFile::Text);
+    }
     qint64 bytesWritten = file->write(text.toUtf8());
     file->close();
 
