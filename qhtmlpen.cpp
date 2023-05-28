@@ -51,11 +51,11 @@ void QHTMLPen::addNewTab(QString tabName)
 void QHTMLPen::shortCutInitial()
 {
 // Выход
-    buttonMenu.value("Выход")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Escape));
+    buttonMenu.value("Выход")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q));
 // Создать вкладку
     buttonMenu.value("Создать")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_N));
 // Закрыть вкладку
-    buttonMenu.value("Закрыть вкладку")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_X));
+    buttonMenu.value("Закрыть вкладку")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_W));
 // Сохранить вкладку
     buttonMenu.value("Сохранить")->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_S));
 // Открыть файл
