@@ -123,12 +123,16 @@ void FileTabWidget::slotSaveCurrentTab()
 
     QString text = currentQTextEditWidget->toPlainText();
 
+    //текущее название вкладки
+    QString fileName = tabText(currentIndex);
     // если при сохранении вернётся ошибка, то мы выходим не меняя статуса
     if(fileSystem->saveFile(text) == writeErr)
     {
         return;
     }
 
+    fileName = fileSystem->getFileName();
+    setTabText(currentIndex, fileName);
     //меняем контрольный буфер
     lastSavedData.at(indexOf(currentQTextEditWidget)) = text;
     // убираем звёздочку
@@ -152,11 +156,12 @@ void FileTabWidget::slotSaveCurrentTabAs()
 
     QString fileName ="Новая вкладка";
      // если при сохранении вернётся ошибка, то мы выходим не меняя статуса
-    if(fileSystem->saveAs(text, fileName) == writeErr)
+    if(fileSystem->saveAs(text) == writeErr)
     {
         return;
     }
 
+    fileName = fileSystem->getFileName();
     //меняем имя вкладки
     setTabText(currentIndex, fileName);
   
@@ -234,10 +239,10 @@ void FileTabWidget::slotOpen()
 {
     qDebug() << "slotOpen";
   
-    QString fileName = "";
+    QString fileName = "Новая вкладка";
   
     // сначала пытаемся откыть файл
-    QString fileText = fileSystem->openFile(fileName);
+    QString fileText = fileSystem->openFile();
 
     // усли нет текста, значит не открыли и можно выходить
     if(fileText == nullptr)
@@ -245,5 +250,6 @@ void FileTabWidget::slotOpen()
         return;
     }
 
+    fileName = fileSystem->getFileName();
     addTab(new QTextEdit(fileText, this), fileName);
 }
