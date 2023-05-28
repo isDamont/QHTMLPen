@@ -244,6 +244,6 @@ void FileTabWidget::slotOpen()
     {
         return;
     }
-
+//
     addTab(new QTextEdit(fileText, this), fileName);
 }
