@@ -64,7 +64,7 @@ QString FileSystem::getFileName()
 //Метод создаёт новый объект QFile
 bool FileSystem::createFile()
 {
-    QString strSelFilter="*.txt";
+    QString strSelFilter{};
 
     QString fileName = QFileDialog::getSaveFileName(nullptr, "Сохранить файл",
         QDir::currentPath(), strFilter, &strSelFilter );

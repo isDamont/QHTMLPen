@@ -6,7 +6,6 @@
 FileTabWidget::FileTabWidget(QWidget *parent)
     : QTabWidget(parent)
 {
-    fileSystem = std::make_unique<FileSystem>();
     timerToCheckStatus = std::make_unique<QTimer>(this);
     timerToCheckStatus->setInterval(std::chrono::seconds(1));
 
@@ -126,12 +125,12 @@ void FileTabWidget::slotSaveCurrentTab()
     //текущее название вкладки
     QString fileName = tabText(currentIndex);
     // если при сохранении вернётся ошибка, то мы выходим не меняя статуса
-    if(fileSystem->saveFile(text) == writeErr)
+    if(fileSystem.at(currentIndex)->saveFile(text) == writeErr)
     {
         return;
     }
 
-    fileName = fileSystem->getFileName();
+    fileName = fileSystem.at(currentIndex)->getFileName();
     setTabText(currentIndex, fileName);
     //меняем контрольный буфер
     lastSavedData.at(indexOf(currentQTextEditWidget)) = text;
@@ -156,18 +155,15 @@ void FileTabWidget::slotSaveCurrentTabAs()
 
     QString fileName ="Новая вкладка";
      // если при сохранении вернётся ошибка, то мы выходим не меняя статуса
-    if(fileSystem->saveAs(text) == writeErr)
+    if(fileSystem.at(currentIndex)->saveAs(text) == writeErr)
     {
         return;
     }
 
-    fileName = fileSystem->getFileName();
+    fileName = fileSystem.at(currentIndex)->getFileName();
     //меняем имя вкладки
     setTabText(currentIndex, fileName);
   
-    //меняем статус вкладки
-    //saveStatusVector.at(currentIndex) = true;
-
     // убираем звёздочку
     setTabIconStarVisibleTo(currentIndex, false);
 }
@@ -221,6 +217,9 @@ void FileTabWidget::tabInserted(int index)
     }
 
     setCurrentIndex(index);
+
+    // создаём экземпляр класса для FileSystem для новой вкладки и добавляем его в вектор с тем-же индексом
+    fileSystem.insert(fileSystem.cbegin() + index, std::make_unique<FileSystem>());
 }
 
 void FileTabWidget::tabRemoved(int index)
@@ -231,6 +230,9 @@ void FileTabWidget::tabRemoved(int index)
     // удаляем контрольный буфер
     lastSavedData.erase(lastSavedData.begin() + index);
 
+    // удаляем экземпляр классы filesystem для удалённой вкладки
+    fileSystem.erase(fileSystem.begin() + index);
+
     // подаём сигнал об удалении вкладки
     emit signalTabRemoved();
 }
@@ -240,9 +242,12 @@ void FileTabWidget::slotOpen()
     qDebug() << "slotOpen";
   
     QString fileName = "Новая вкладка";
+
+    // создаём новый экземпляр класса FileSystem для открытия нового файла
+    std::unique_ptr<FileSystem> newFileSystem = std::make_unique<FileSystem>();
   
     // сначала пытаемся откыть файл
-    QString fileText = fileSystem->openFile();
+    QString fileText = newFileSystem->openFile();
 
     // усли нет текста, значит не открыли и можно выходить
     if(fileText == nullptr)
@@ -250,6 +255,9 @@ void FileTabWidget::slotOpen()
         return;
     }
 
-    fileName = fileSystem->getFileName();
-    addTab(new QTextEdit(fileText, this), fileName);
+    fileName = newFileSystem->getFileName();
+    int newTabIndex = addTab(new QTextEdit(fileText, this), fileName);
+
+    // перемещаем используемый экземпляр класса FileSystem в вектор с индексом созданной вкладки
+    fileSystem.at(newTabIndex) = std::move(newFileSystem);
 }

@@ -41,14 +41,12 @@ private:
     void setTabIconStarVisibleTo(int index, bool visible);
 
 private:
-//    // для проверки сохранения изменений
-//    std::vector<bool> saveStatusVector{};
     // для хранения последних сохраннёных данных
     std::vector<QString> lastSavedData{};
     // текущий индекс вкладки, чтобы не вызывать методы для его определения
     int currentIndex{};
-    // умныйуказатель на менеджер записи/чтения чтобы не удалять вручную
-    std::unique_ptr<FileSystem> fileSystem = nullptr;
+    // вектор умных указателей на менеджеры записи/чтения для кажой вкладки
+    std::vector<std::unique_ptr<FileSystem>> fileSystem{};
     // проверка на соответствие сохпанённому тексту
     bool compareData(const QString& buffer, const QString& data);
     // таймер для установки задержки проверки сохранения
