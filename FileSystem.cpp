@@ -58,7 +58,10 @@ QString FileSystem::openFile()
 QString FileSystem::getFileName()
 {
     QFileInfo info(file->fileName());
-    return info.baseName() + '.' +info.suffix();
+    QString suffix = info.completeSuffix();
+
+    //если нету расширения, то возвращается пустая строка
+    return (info.baseName() + (suffix == "" ? "" : "." + suffix));
 }
 
 //Метод создаёт новый объект QFile
