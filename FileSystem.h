@@ -11,7 +11,7 @@ public:
     FileSystem();
     qint64 saveFile(const QString& text);
     qint64 saveAs(const QString& text);
-    QString openFile();
+    bool openFile(QString& textBuffer);
     QString getFileName();
 
 private:

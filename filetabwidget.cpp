@@ -239,17 +239,15 @@ void FileTabWidget::slotOpen()
 {
     qDebug() << "slotOpen";
   
-    QString fileName = "Новая вкладка";
-  
-    // сначала пытаемся откыть файл
-    QString fileText = fileSystem->openFile();
+    // буффер для записи содержимого
+    QString fileText;
 
-    // усли нет текста, значит не открыли и можно выходить
-    if(fileText == nullptr)
+    // если не удалось открыть, то можно выходить
+    if(!fileSystem->openFile(fileText))
     {
         return;
     }
 
-    fileName = fileSystem->getFileName();
+    QString fileName = fileSystem->getFileName();
     addTab(new QTextEdit(fileText, this), fileName);
 }
