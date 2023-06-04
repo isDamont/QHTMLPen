@@ -246,11 +246,11 @@ void FileTabWidget::slotOpen()
     // создаём новый экземпляр класса FileSystem для открытия нового файла
     std::unique_ptr<FileSystem> newFileSystem = std::make_unique<FileSystem>();
   
-    // сначала пытаемся откыть файл
-    QString fileText = newFileSystem->openFile();
+    // буффер для записи содержимого
+    QString fileText;
 
-    // усли нет текста, значит не открыли и можно выходить
-    if(fileText == nullptr)
+    // если не удалось открыть, то можно выходить
+    if(!newFileSystem->openFile(fileText))
     {
         return;
     }

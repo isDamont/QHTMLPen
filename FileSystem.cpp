@@ -34,7 +34,7 @@ qint64 FileSystem::saveAs(const QString &text)
 }
 
 //Возвращает текст из файла
-QString FileSystem::openFile()
+bool FileSystem::openFile(QString& textBuffer)
 {
     QString fileName = QFileDialog::getOpenFileName(nullptr, "Открыть файл",
         QDir::currentPath(), strFilter);
@@ -46,19 +46,22 @@ QString FileSystem::openFile()
         {
             QTextStream stream(file.get());
 
-            QString textReturn = stream.readAll();
+            textBuffer = stream.readAll();
             file->close();
-            return textReturn;
+            return true;
         }
     }
 
-    return nullptr;
+    return false;
 }
 
 QString FileSystem::getFileName()
 {
     QFileInfo info(file->fileName());
-    return info.baseName() + '.' +info.suffix();
+    QString suffix = info.completeSuffix();
+
+    //если нету расширения, то возвращается пустая строка после имени файла
+    return (info.baseName() + (suffix == "" ? "" : "." + suffix));
 }
 
 //Метод создаёт новый объект QFile
